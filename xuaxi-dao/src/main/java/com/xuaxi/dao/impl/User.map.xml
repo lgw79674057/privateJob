@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.UserDaoImpl">
+	<resultMap id="no_user_map" type="com.xuaxi.entity.UserEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="userNo" column="userNo" javaType="java.lang.String" />
+		<result property="userCode" column="userCode" javaType="java.lang.String" />
+		<result property="loginName" column="loginName" javaType="java.lang.String" />
+		<result property="password" column="password" javaType="java.lang.String" />
+		<result property="telphone" column="telphone" javaType="java.lang.String" />
+		<result property="name" column="name" javaType="java.lang.String" />
+		<result property="sex" column="sex" javaType="java.lang.String" />
+		<result property="email" column="email" javaType="java.lang.String" />
+		<result property="userType" column="userType" javaType="java.lang.String" />
+		<result property="certType" column="certType" javaType="java.lang.String" />
+		<result property="certNo" column="certNo" javaType="java.lang.String" />
+		<result property="nationality" column="nationality" javaType="java.lang.String" />
+		<result property="enterpriseId" column="enterpriseId" javaType="java.lang.Long" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+		<result property="certPic" column="certPic" javaType="java.lang.String" />
+		<result property="followed" column="followed" javaType="java.lang.Integer" />
+		<result property="followedNum" column="followedNum" javaType="java.lang.Integer" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`userNo`,t.`userCode`,t.`loginName`,t.`password`,t.`telphone`,t.`name`,t.`sex`,t.`email`,t.`userType`,t.`certType`,t.`certNo`,t.`nationality`,t.`enterpriseId`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`,t.certPic,t.followed,t.followedNum</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		no_user(
+			`id`
+			,`userNo`
+			,`userCode`
+			,`loginName`
+			,`password`
+			,`telphone`
+			,`name`
+			,`sex`
+			,`email`
+			,`userType`
+			,`certType`
+			,`certNo`
+			,`nationality`
+			,`enterpriseId`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`,certPic,followed,followedNum)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.userNo != null">#{item.userNo,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.userCode != null">#{item.userCode,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.loginName != null">#{item.loginName,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.password != null">#{item.password,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.telphone != null">#{item.telphone,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.name != null">#{item.name,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.sex != null">#{item.sex,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.email != null">#{item.email,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.userType != null">#{item.userType,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.certType != null">#{item.certType,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.certNo != null">#{item.certNo,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.nationality != null">#{item.nationality,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enterpriseId != null">#{item.enterpriseId,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP()
+			,<choose><when test="item.certPic != null">#{item.certPic,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			,<choose><when test="item.followed != null">#{item.followed,javaType=java.lang.Integer}</when><otherwise>DEFAULT</otherwise></choose>
+			,<choose><when test="item.followedNum != null">#{item.followedNum,javaType=java.lang.Integer}</when><otherwise>DEFAULT</otherwise></choose>)
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.UserEntity">
+		update no_user
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="userNo!=null">`userNo`=#{userNo,javaType=java.lang.String},</if>
+			<if test="userCode!=null">`userCode`=#{userCode,javaType=java.lang.String},</if>
+			<if test="loginName!=null">`loginName`=#{loginName,javaType=java.lang.String},</if>
+			<if test="password!=null">`password`=#{password,javaType=java.lang.String},</if>
+			<if test="telphone!=null">`telphone`=#{telphone,javaType=java.lang.String},</if>
+			<if test="name!=null">`name`=#{name,javaType=java.lang.String},</if>
+			<if test="sex!=null">`sex`=#{sex,javaType=java.lang.String},</if>
+			<if test="email!=null">`email`=#{email,javaType=java.lang.String},</if>
+			<if test="userType!=null">`userType`=#{userType,javaType=java.lang.String},</if>
+			<if test="certType!=null">`certType`=#{certType,javaType=java.lang.String},</if>
+			<if test="certNo!=null">`certNo`=#{certNo,javaType=java.lang.String},</if>
+			<if test="nationality!=null">`nationality`=#{nationality,javaType=java.lang.String},</if>
+			<if test="enterpriseId!=null">`enterpriseId`=#{enterpriseId,javaType=java.lang.Long},</if>
+			<if test="certPic!=null">`certPic`=#{certPic,javaType=java.lang.String},</if>
+			<if test="followed!=null">`followed`=#{followed,javaType=java.lang.Integer},</if>
+			<if test="followedNum!=null">`followedNum`=#{followedNum,javaType=java.lang.Integer},</if>
+			<if test="deleteTag!=null">`deleteTag`=#{deleteTag,javaType=java.lang.Boolean},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update no_user
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="no_user_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from no_user t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		<if test="sortColumn!=null and sortColumn.size()>0">
+			order by
+			<foreach collection="sortColumn" item="item" index="index"
+				separator=",">
+				${item.column} ${item.operator}
+			</foreach>
+		</if>
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from no_user t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<update id="removeFollowed" parameterType="long">
+		update  no_user <set> followed=followed-1 </set><where> id =#{userId}</where>
+	</update>
+</mapper>

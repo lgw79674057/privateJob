@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error" monitorInterval="30">
+	<appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d [%-5p] [%t] %m %throwable{full} (%C:%F:%L) %n" />
+		</Console>
+	</appenders>
+	<Loggers> 
+		<Logger name="com.hnzbdh" level="debug" additivity="true" />
+		<Logger name="java.sql.Connection" level="debug" additivity="true" />
+		<Logger name="java.sql.Statement" level="debug" additivity="true" />
+		<Logger name="java.sql.PreparedStatement" level="debug" additivity="true" />
+		<Logger name="java.sql.Connection" level="debug" />
+		<Logger name="java.sql.PreparedStatement" level="debug" />
+		<Logger name="java.sql.Resultset" level="debug" />
+		<Logger name="java.sql.Statement" level="debug" />
+		<Logger name="com.alibaba.dubbo" level="warn" />
+		<Logger name="org.apache.zookeeper.Environment" level="warn" />
+		<Root level="debug">
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+</configuration>

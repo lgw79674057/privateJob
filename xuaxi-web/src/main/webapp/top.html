@@ -1,0 +1,65 @@
+<header class="am-topbar-fixed-top">
+	<div class="zx-header-logo"><div style="font-size: 30px;color: rgba(89, 194, 226, 1);font-weight: bold;">位号&nbsp;<span style="font-size: 25px;font-weight: normal;">WEIDCODE</span></div></div>
+	<div class="zx-header-body">
+		<div class="am-icon-list zx-header-menu" id="zx-header-menu"></div>
+		<div class="zx-header-body-texticon" onclick="$.session.logout()">
+			<i class="am-icon-sign-out"></i> <label>&nbsp;退出</label>
+		</div>
+		<div class="zx-header-body-texticon" id="zx-header-fullscreen">
+			<i class="am-icon-arrows-alt"></i> <label>&nbsp;全屏</label>
+		</div>
+		<div class="zx-header-body-user">
+			欢迎您，用户号:<label id="user_No"></label>,登录名:<label id="_zx_fullName"></label>
+		</div>
+		<div class="zx-header-body-texticon">
+			<label id="enterPrise_Status" style="cursor: pointer;"></label>
+		</div>
+		<div class="zx-header-body-user">
+			<label id="enterPrise_Name"></label>
+		</div>
+		<div class="zx-header-body-user">
+			位号:<label id="enterPrise_No"></label>
+		</div>
+	</div>
+</header>
+<div class="zx-body-left" id="zx-body-left">
+	<div style="text-align: center; padding-top: 20px;">
+		<img src="{LOCAL_CONTEXT_PATH}lib/images/user.png"
+			id="_zx_headPortrait" class="am-img-thumbnail am-circle"
+			style="width: 120px; height: 120px;">
+	</div>
+	<div style="text-align: center; font-size: 14px;cursor: pointer;">
+		<div id="userSetting" class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+			<span style="border-radius: 4px; margin-top: 0px;" class="am-dropdown-toggle">
+				<i class="am-icon-cog"></i>&nbsp;用户设置&nbsp;<span class="am-icon-caret-down"></span>
+			</span>
+			<ul class="am-dropdown-content" style="min-width: 150px;cursor: pointer;">
+				<li onclick="$.modifyPassword()"><a href="javascript:void(0)"><i class="am-icon-code"></i>&nbsp;修改密码</a></li>
+				<li onclick="$.modifyPhone()"><a href="javascript:void(0)"><i class="am-icon-phone"></i>&nbsp;修改绑定手机</a></li>
+			</ul>
+		</div>
+		
+		&nbsp;&nbsp;|&nbsp;&nbsp;<span onclick="$.session.logout()"><i class="am-icon-sign-out"></i>&nbsp;退出登录</span>
+	</div>
+	<ul class="am-list zx-body-left-menu admin-sidebar-list"
+		id="zx-left-systemMenu">
+		<li class="am-panel"><a
+			data-am-collapse="{parent: '#zx-left-systemMenu'}"
+			class="zx-body-menu-head" style="border-bottom: 0px;">导航菜单 <small>Menu</small></a></li>
+		<li class="am-panel" menuid="home"><a href="main.html"><i
+				class="am-icon-home am-margin-left-sm"></i> 要开票</a></li>
+		<li class="am-panel" menuid="enterprise" level="1"><a
+			data-am-collapse="{parent: '#zx-left-systemMenu', target: '#enterprise_'}"
+			class="am-collapsed"> <i class="am-icon-database am-margin-left-sm"></i>
+				系统信息维护<i class="am-icon-angle-right am-fr am-margin-right"></i>
+		</a>
+			<ul class="am-list admin-sidebar-sub am-collapse" id="enterprise_"
+				style="height: 0px;">
+				<li menuid="enterpriseInfo" level="2"><a
+					href="enterpriseInfo.html"><i
+						class="am-icon-database am-margin-left-sm"></i> 本单位资料</a></li>
+				<li menuid="invoice" level="2"><a href="invoiceInfo.html"><i
+						class="am-icon-list-alt am-margin-left-sm"></i> 本单位发票信息</a></li>
+			</ul></li>
+	</ul>
+</div>

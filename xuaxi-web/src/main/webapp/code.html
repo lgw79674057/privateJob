@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>位号 WEIDCODE</title>
+<meta name="description" content="首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.swiper.css" />
+<style type="text/css">
+.click_ {
+	text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$.Grid.init({
+			table : "#table_",
+			url : $.CONTEXT_PATH + "api/v1/code",
+			pager : "#page_",
+			template : "#template_",
+			conditionForm : "#zx_search_form",
+			callBack : function(data) {
+				if (data && data.length > 0) {
+					$("input[type='checkbox']").uCheck();
+				}
+			}
+		});
+
+		Handlebars.registerHelper("noType", function(v1, options) {
+			if(v1=='1'||v1==1){
+				return "个人";
+			}
+			if(v1=='2'||v1==2){
+				return "企业";
+			}
+			if(v1=='3'||v1==3){
+				return "第三方";
+			}
+		});
+		Handlebars.registerHelper("noUseFun", function(v1, options) {
+			if(v1=='1'||v1==1){
+				return "免费号";
+			}
+			if(v1=='2'||v1==2){
+				return "特殊号";
+			}
+		});
+		Handlebars.registerHelper("noUseFn", function(v1, options) {
+			if(v1=='1'||v1==1){
+				return "变特殊号";
+			}
+			if(v1=='2'||v1==2){
+				return "变免费号";
+			}
+		});
+
+
+
+
+
+	}
+	function changeNoUse(noUse,codeId){
+		var noUseCode;
+		if(noUse==1){
+			noUseCode=2;
+		}else{
+			noUseCode=1;
+		}
+		AMUI.dialog.confirm({
+			title:"系统提示",
+			content:"是否确认改变位号用途",
+			onConfirm:function(){
+				var $loading = AMUI.dialog.loading({
+					title : "正在提交"
+				});
+				$.RESTFUL.PATCH({
+					url : $.CONTEXT_PATH + "api/v1/code/changeNoUse?codeId="+codeId+"&noUseCode="+noUseCode,
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "更改成功",
+								onConfirm : function() {
+									$.Grid.search('#table_');
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		});
+	};
+	function auditRemark (options) {
+		  options = options || {};
+		  options.title = options.title || '提示';
+		  options.placeholder = options.placeholder || '';
+		  options.content = options.content || '提示内容';
+		  options.onConfirm = options.onConfirm || function() {
+		    };
+		  options.onCancel = options.onCancel || function() {
+		    };
+
+		  var html = [];
+		  html.push('<div class="am-modal am-modal-prompt" tabindex="-1">');
+		  html.push('<div class="am-modal-dialog">');
+		  html.push('<div class="am-modal-hd">' + options.title + '</div>');
+		  html.push('<div class="am-modal-bd"><div class="zx-login-input"> <span style="width: auto;">单位位号&nbsp;<select name="nationality" style="border:0px;border-bottom: 0px;width: 60px;"></select></span> <input type="text" style="padding-left: 150px;"placeholder="请输入要增加的位号" name="enterpriseNo"> </div></div>');
+		  html.push('<div class="am-modal-bd"><span>位码类型:</span><input type="radio" name="noType" value="1">个人<input type="radio" name="noType" value="2" checked>企业<input type="radio" name="noType" value="3">第三方</div>');
+		  html.push('<div class="am-modal-bd"><span>用途:</span><input type="radio" name="noUse" value="1" checked>免费号<input type="radio" name="noUse" value="2">特殊号</div>');
+		  html.push('<div class="am-modal-footer">');
+		  html.push('<span class="am-modal-btn" data-am-modal-cancel>取消</span>');
+		  html.push('<span class="am-modal-btn" data-am-modal-confirm>确定</span>');
+		  html.push('</div>');
+		  html.push('</div>');
+		  html.push('</div>');
+		$.RESTFUL.GET({
+			url : $.CONTEXT_PATH + "api/v1/dict/nationalitys",
+			success : function(d) {
+				if (d.status == true) {
+					var string="";
+					var firest="";
+					for(var str in d.result){
+						if(str=="CHN"){
+							firest="<option value='"+str+"'>"+str+"-"+d.result[str]+"</option>"
+						}else{
+							string+="<option value='"+str+"'>"+str+"-"+d.result[str]+"</option>";
+						}
+					}
+					string=firest+string;
+				}
+				$("select[name='nationality']").html(string);
+			}
+		});
+
+		  return $(html.join('')).appendTo('body').modal({
+		    onConfirm: function(e) {
+		    	options.onConfirm(e);
+		    },
+		    onCancel: function() {
+		    	options.onCancel();
+		    }
+		  }).on('closed.modal.amui', function(e) {
+			  $(this).remove();
+		  });
+
+		};
+
+	function addCode(){
+		auditRemark({
+			title:"系统提示",
+			placeholder:"请输入要增加的位号",
+			content:"请输入要增加的位号",
+			onConfirm : function() {
+				var nationality=$('select[name=nationality]').val();
+				var enterpriseNo=$('input[name=enterpriseNo]').val();
+				var noType=$('input[name=noType]:checked').val();
+				var noUse=$('input[name=noUse]:checked').val()
+
+				var $loading = AMUI.dialog.loading({
+					title : "正在提交"
+				});
+				$.RESTFUL.PUT({
+					url : $.CONTEXT_PATH + "api/v1/code/add?nationality="+nationality+"&enterpriseNo="+enterpriseNo+"&noType="+noType+"&noUse="+noUse,
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "操作成功",
+								onConfirm : function() {
+									$.Grid.search('#table_');
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		});
+	}
+</script>
+</head>
+<body menu_id="audit">
+	<div id="zx-body" class="zx-body-center zx-body">
+		<div class="zx-body-title">
+			<i class="am-icon-home"></i>&nbsp;位号管理<small>&nbsp;Enterprise
+				approval</small>
+		</div>
+		<div id="_xuaxi_main_" style="max-width: 100%;">
+			<section class="am-panel am-panel-default"
+				style="border-radius: 8px;">
+				<header class="am-panel-hd">
+					<h4 class="am-panel-title">
+						位号列表 <input type="button" value="增加位号" onclick="addCode();"/>
+						<div class="am-btn-group am-btn-group-xs zx-title-button-right" style="top: auto; right: 40px;">
+							<button class="am-btn am-btn-default am-round am-dropdown am-icon-search" data-am-dropdown id="searchUserBtn">
+								<div class="am-dropdown-toggle zx-dropdown-button" data-am-dropdown-toggle></div>
+								<div class="am-dropdown-content zx-search-dropdown-content">
+									<div class="am-dropdown-header">高级检索</div>
+									<form id="zx_search_form">
+										<div class="am-input-group zx-input-group">
+											<span class="am-input-group-label">位号查询</span><input
+												type="text" class="zx-form-field" name="no"
+												placeholder="请输入位号">
+										</div>
+										<div class="zx-search-form-button">
+											<div class="am-btn am-btn-success am-round am-btn-sm"
+												onclick="$.Grid.search('#table_')">检索</div>
+
+											<div class="am-btn am-btn-danger am-round am-btn-sm"
+												onclick="$('#zx_search_form input[name=no]').val('')">重置</div>
+										</div>
+									</form>
+								</div>
+							</button>
+						</div>
+					</h4>
+				</header>
+				<script id="template_" type="text/x-handlebars-template">
+	{{#each this}}
+		<tr style="cursor: pointer;" onclick="$(this).find('input').uCheck('toggle')">
+			<!--<td><label class="am-checkbox am-warning"><input type="checkbox" value="{{id}}"></label></td>-->
+			<td>{{no}}</td>
+			<td>{{#noType noType}}{{/noType}}</td>
+			<td class="am-hide-sm-down">{{#if state}}已启用{{else}}未启用{{/if}}</td>
+			<td class="am-hide-md-down">{{#noUseFun noUse}}{{/noUseFun}}</td>
+			<td class="am-hide-md-down"><input type="button" value="{{#noUseFn noUse}}{{/noUseFn}}" onclick="changeNoUse('{{noUse}}','{{id}}');"/></td>
+		</tr>
+	{{/each}}
+</script>
+				<div class="am-panel-bd">
+					<table class="am-table am-table-hover am-table-striped" id="table_">
+						<thead>
+							<tr>
+								<th style="min-width: 70px;">位号</th>
+								<th style="min-width: 60px;">位码类型</th>
+								<th style="max-width: 112px;">状态</th>
+								<th style="max-width: 96px;" class="am-hide-sm-down">用途</th>
+								<th style="max-width: 96px;" class="am-hide-sm-down">操作</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="zx-pagination" id="page_"></div>
+				</div>
+			</section>
+			<div class="am-u-sm-12 zx-footer am-show-md-up">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号 </div>
+		</div>
+	</div>
+	<div class="zx-fixed-bar am-show-md-down">
+		<a href="#top" title="回到顶部"
+			style="color: #333; background-color: #ddd"
+			class="am-icon-btn am-icon-arrow-up"></a>
+	</div>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.grid.js"></script>
+	<script type="text/javascript" src="lib/js/Page.init1.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.swiper.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+</body>
+</html>

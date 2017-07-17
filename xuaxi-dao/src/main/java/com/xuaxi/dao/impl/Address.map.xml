@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.AddressDaoImpl">
+	<resultMap id="rm_address_cnarea_map" type="com.xuaxi.entity.AddressEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="area_code" column="area_code" javaType="java.lang.String" />
+		<result property="level" column="level" javaType="java.lang.Integer" />
+		<result property="father" column="father" javaType="java.lang.String" />
+		<result property="name" column="name" javaType="java.lang.String" />
+		<result property="short_name" column="short_name" javaType="java.lang.String" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`area_code`,t.`level`,t.`father`,t.`name`,t.`short_name`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		rm_address_cnarea(
+			`id`
+			,`area_code`
+			,`level`
+			,`father`
+			,`name`
+			,`short_name`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.area_code != null">#{item.area_code,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.level != null">#{item.level,javaType=java.lang.Integer}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.father != null">#{item.father,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.name != null">#{item.name,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.short_name != null">#{item.short_name,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP())
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.AddressEntity">
+		update rm_address_cnarea
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="area_code!=null">`area_code`=#{area_code,javaType=java.lang.String},</if>
+			<if test="level!=null">`level`=#{level,javaType=java.lang.Integer},</if>
+			<if test="father!=null">`father`=#{father,javaType=java.lang.String},</if>
+			<if test="name!=null">`name`=#{name,javaType=java.lang.String},</if>
+			<if test="short_name!=null">`short_name`=#{short_name,javaType=java.lang.String},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update rm_address_cnarea
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="rm_address_cnarea_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from rm_address_cnarea t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		<if test="sortColumn!=null and sortColumn.size()>0">
+			order by
+			<foreach collection="sortColumn" item="item" index="index"
+				separator=",">
+				${item.column} ${item.operator}
+			</foreach>
+		</if>
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from rm_address_cnarea t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

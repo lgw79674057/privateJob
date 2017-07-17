@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>位号 WEIDCODE</title>
+<meta name="description" content="首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.swiper.css" />
+<style type="text/css">
+@media only screen and (min-width:1025px){
+	.am-avg-lg-2 > li {
+	    width: 50%!important;
+	 }
+	 .am-avg-lg-2 li:nth-child(odd){
+	 	padding-right: 5px!important;
+	 }
+	  .am-avg-lg-2 li:nth-child(even){
+	 	padding-left: 5px!important;
+	 }
+}
+
+.am-avg-lg-2 > li {
+	    width: 100%;
+}
+
+.mystyle>a {
+	border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+.mystyle>a {
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.am-btn-group>.am-btn:FIRST-CHILD{
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+.am-btn-group>.am-btn:LAST-CHILD{
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.am-btn-group{
+	margin-bottom: 10px;
+	margin-right:5px;
+	margin-left: 5px;
+}
+
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		Handlebars.registerHelper("truncation", function(v1, options) {
+			if (v1) {
+				if (v1.length > 50) {
+					return v1.substring(0, 50) + "...";
+				} else {
+					return v1;
+				}
+			}
+			return "";
+		});
+		
+		Handlebars.registerHelper("dateFormart", function(v1, options) {
+			if(v1&&v1.length>10){
+				return v1.substring(0,10);
+			}
+			return v1;
+		});
+
+		Handlebars.registerHelper("follow", function(v1, options) {
+			if (template[v1]) {
+				return '<button type="button" guanzhuBtn="' + v1
+						+ '" class="am-btn am-topbar-btn am-btn-sm" style="border-radius: 4px; float: right;margin-top:2px;" onclick="unFollow(\'' + v1
+						+ '\')"><i class="am-icon-remove"></i>&nbsp;取关</button>';
+			} else {
+				return '<button type="button" guanzhuBtn="' + v1
+						+ '" class="am-btn am-topbar-btn am-btn-sm" style="border-radius: 4px; float: right;margin-top:2px;" onclick="saveFollow(\'' + v1
+						+ '\')"><i class="am-icon-plus"></i>&nbsp;关注</button>';
+			}
+		});
+		$("#search_").button('loading');
+		loadFollow(function() {
+			$("#search_").button('reset');
+			$("input[name='search_key']").on("keyup", function(e) {
+				if (e.keyCode == 13) {
+					search();
+				}
+			});
+			$("#search_").click(search);
+		});
+		
+		$.Grid.init({
+			table : "#table_",
+			url : $.CONTEXT_PATH + "api/v1/follow",
+			pager : "#page_",
+			isPage:false,
+			template : "#template_table_",
+// 			conditionForm : "#zx_search_form",
+			callBack : function(data) {
+				template = {};
+				if (data && data.length > 0) {
+					for (var i = 0; i < data.length; i++) {
+						template[data[i].enterpriseId] = data[i];
+					}
+// 					$("input[type='checkbox']").uCheck();
+				}
+				getFollowed();
+			}
+		});
+		function getFollowed() {
+			$.RESTFUL.GET({
+				url : $.CONTEXT_PATH + "api/v1/user/getFollowed",
+				success : function(d) {
+					if (d.status == true) {
+						$('#followed').text(d.result.followed);
+						$('#followedNum').text(d.result.followedNum);
+
+					}
+				}
+			});
+		}
+	}
+
+	function unFollow(id) {
+		AMUI.dialog.confirm({
+			title : "系统提示",
+			content : "确定要取消关注该单位？",
+			onConfirm : function() {
+				var $loading = AMUI.dialog.loading({
+					title : "正在取消关注"
+				});
+				$.RESTFUL.DELETE({
+					url : $.CONTEXT_PATH + "api/v1/follow",
+					data : '{"enterpriseId":"' + id + '"}',
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "取消成功",
+								onConfirm : function() {
+									var obj = $("button[guanzhuBtn='" + id + "']");
+									obj.parent().append(
+											'<button type="button" guanzhuBtn="' + id
+													+ '" class="am-btn am-topbar-btn am-btn-sm" style="border-radius: 4px; float: right;margin-top:2px;" onclick="saveFollow(\''
+													+ id + '\')"><i class="am-icon-plus"></i>&nbsp;关注</button>')
+									obj.remove();
+									loadFollow();
+									$.Grid.search("#table_")
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		})
+	}
+
+	function saveFollow(id) {
+		AMUI.dialog.confirm({
+			title : "系统提示",
+			content : "确定要关注该单位？",
+			onConfirm : function() {
+				var $loading = AMUI.dialog.loading({
+					title : "正在关注"
+				});
+				$.RESTFUL.POST({
+					url : $.CONTEXT_PATH + "api/v1/follow",
+					data : '{"enterpriseId":"' + id + '"}',
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "关注成功",
+								onConfirm : function() {
+									var obj = $("button[guanzhuBtn='" + id + "']");
+									obj.parent().append(
+											'<button type="button" guanzhuBtn="' + id
+													+ '" class="am-btn am-topbar-btn am-btn-sm" style="border-radius: 4px; float: right;margin-top:2px;" onclick="unFollow(\'' + id
+													+ '\')"><i class="am-icon-remove"></i>&nbsp;取关</button>')
+									obj.remove();
+									loadFollow();
+									$.Grid.search("#table_")
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		})
+	}
+	var template = {};
+	
+	function loadFollow(fn) {
+		$.RESTFUL.GET({
+			url : $.CONTEXT_PATH + "api/v1/follow/byChange",
+			success : function(d) {
+				if (d.status == true) {
+					var follow = $("#follow_1 div");
+					if (d.result && d.result.length > 0) {
+						follow.html("");
+// 						template = {};
+						for (var i = 0; i < d.result.length; i++) {
+// 							template[d.result[i].enterpriseId] = d.result[i];
+							$(getBtnHtml(d.result[i])).appendTo(follow);
+						}
+					} else {
+						follow.html("您还关注的单位暂无动态（被关注的单位，当其开票信息发生变化后，将在此特别显示。）")
+					}
+					if (typeof (fn) == 'function') {
+						fn()
+					}
+				}
+			}
+		});
+	}
+	
+	var thisShow;
+	function showChange(id,audit,disable){
+		if(!audit){
+			AMUI.dialog.error({
+				title : '系统提示',
+				content : '审核中,稍后查看'
+			});
+			return;
+
+		}else{
+			if(disable){
+				AMUI.dialog.error({
+					title : '系统提示',
+					content : '审核未通过,稍后查看'
+				});
+				return;
+			}
+		}
+		if(thisShow==id){
+			$("#change_").toggle();
+		}else{
+			thisShow=id;
+			if(templateChangHtml[id]){
+				$("#change_ .am-panel-bd").html(templateChangHtml[id]);
+			}else{
+				changeLoading();
+				$("#change_").show();
+				$.RESTFUL.GET({
+					url : $.CONTEXT_PATH + "api/v1/changerecord/"+id+"/byUser",
+					success : function(d) {
+						if (d.status == true) {
+
+							var arr1=[];
+							var arr2=[];
+							for(var i=0;i<d.result.length;i++){
+//								if(d.result[i].changeType==0||d.result[i].changeType=='0'){
+								arr1.push(d.result[i]);
+//								}else{
+//									arr2.push(d.result[i]);
+//								}
+							}
+							var html=Handlebars.compile($("#template_1").html())({arr1:arr1});
+							templateChangHtml[id]=html;
+							$("#change_ .am-panel-bd").html(html);
+						}else{
+							AMUI.dialog.error({
+								title : '系统提示',
+								content : '审核中,稍后查看!'
+							});
+						}
+					}
+				});
+			}
+		}
+
+	}
+	
+	var templateChangHtml={};
+	
+	function changeLoading(){
+		$("#change_ .am-panel-bd").html('<div align="center"><i class="am-icon-spinner am-icon-spin" style="font-size:50px;"></i><div>');
+	}
+	
+	function getBtnHtml(obj){
+		var html=[];
+		html.push('<div class="am-btn-group am-btn-group-md am-animation-fade">');
+		html.push('<button type="button" class="am-btn')
+		if(obj.change==true){
+			html.push('am-btn-warning');
+		}else{
+			html.push('am-btn-default');
+		}
+		html.push('" onclick="showInfo(');
+		html.push("\'"+obj.enterpriseId+"\'")
+		html.push(',');
+		html.push(obj.dataLock)
+		html.push(',')
+		html.push(obj.unLock);
+		html.push(',')
+		html.push(obj.audit);
+		html.push(',')
+		html.push(obj.disable);
+		html.push(')">');
+		html.push(obj.enterpriseName)
+		html.push('</button>');
+		if(obj.change==true){
+			html.push('<button type="button" class="am-btn am-btn-warning" onclick="showChange('+obj.enterpriseId+','+obj.audit+','+obj.disable+')"><i class="am-icon-angle-double-down"></i></button>');
+		}
+		html.push('<button type="button" class="am-btn');
+		if(obj.change==true){
+			html.push('am-btn-warning');
+		}else{
+			html.push('am-btn-default');
+		}
+		html.push('" onclick="unFollow(\''+obj.enterpriseId+'\')"><i class="am-icon-times"></i></button></div>');
+		return html.join(" ");
+	}
+
+	function search() {
+		var obj = $("input[name='search_key']");
+		if (!obj.val()) {
+			obj.addClass("am-animation-shake");
+			setTimeout(function() {
+				obj.removeClass("am-animation-shake");
+			}, 500);
+			return;
+		}
+		pageNo = 1;
+		$("#context_").html('');
+		$("#tip_").show();
+		$("#next_").hide();
+		load(obj.val());
+	}
+	var pageNo = 1;
+	function getStateName(audit,disable){
+		var flag;
+		if(audit==0){
+			flag="审核中";
+		}else{
+			if(disable==1){
+				flag="审核未通过";
+			}else{
+				flag="";
+			}
+		}
+		return flag;
+	}
+	function load() {
+		var v = $("input[name='search_key']").val();
+		$("#search_").button('loading');
+		$("#change_").hide();
+		$.RESTFUL.GET({
+			url : $.CONTEXT_PATH + "api/v1/enterprise/index",
+			data : 'pageSize=10&key=' + encodeURI(v) + "&pageNo=" + pageNo,
+			success : function(d) {
+				if (d.status == true) {
+					if (d.result.datas && d.result.datas.length > 0) {
+						pageNo++;
+						$("#tip_").hide();
+						for (var i = 0; i < d.result.datas.length; i++) {
+							d.result.datas[i].enterpriseNo = d.result.datas[i].enterpriseNo.replace(new RegExp(v, "g"), "<span style='color:red'>" + v + "</span>");
+							d.result.datas[i].name = d.result.datas[i].name.replace(new RegExp(v, "g"), "<span style='color:red'>" + v + "</span>");
+							d.result.datas[i].businessScope = d.result.datas[i].businessScope.replace(new RegExp(v, "g"), "<span style='color:red'>" + v + "</span>");
+							d.result.datas[i].stateName = (getStateName(d.result.datas[i].audit,d.result.datas[i].disable));
+						}
+						$("#context_").append(Handlebars.compile($("#template_").html())(d.result.datas));
+						if (d.result.totalSize > (pageNo - 1) * 10) {
+							$("#next_").show();
+						} else {
+							$("#next_").hide();
+						}
+					} else {
+						if (pageNo == 1) {
+							AMUI.dialog.error({
+								title : '系统提示',
+								content : '没有找到数据'
+							});
+						} else {
+							$("#next_").hide();
+						}
+					}
+				}
+			},
+			complete : function() {
+				$("#search_").button('reset');
+			}
+		});
+	}
+
+	function showInfo(id, lock, unlock,audit,disable) {
+		if(!audit){
+			AMUI.dialog.error({
+				title : '系统提示',
+				content : '审核中,稍后查看'
+			});
+			return;
+		}else{
+			if(disable){
+				AMUI.dialog.error({
+					title : '系统提示',
+					content : '审核未通过,稍后查看'
+				});
+				return;
+			}
+		}
+		if (unlock == true) {
+			$.view(id, '0');
+			return;
+		}
+		if (lock == true) {
+			AMUI.dialog.prompt({
+				title : "查询码",
+				content : "该单位已启用查询码，请输入查询码后进行查看，如不知查询码请与被查询单位联系并索取。",
+				placeholder : "请输入查询码（6位数字）",
+				onConfirm : function(o) {
+					$.view(id, o.data)
+				}
+			})
+		} else {
+			$.view(id, '0');
+		}
+	}
+</script>
+</head>
+<body menu_id="home">
+	<div id="zx-body" class="zx-body-center zx-body">
+		<div class="zx-body-title">
+			<i class="am-icon-home"></i>&nbsp;单位开票信息查询
+		</div>
+		<script id="template_" type="text/x-handlebars-template">
+	{{#each this}}
+	<li>
+	<section class="am-panel am-panel-default am-animation-fade" style="text-align: left;margin-bottom: 10px;" _id="{{id}}" v="{{name}}">
+		<header class="am-panel-hd">
+			<h3 class="am-panel-title">{{{name}}}<span style="padding-left: 90px;">{{{stateName}}}</span>
+				{{#follow id}}
+				{{/follow}}
+			</h3>
+		</header>
+		<div class="am-panel-bd">
+			<div><a href="javascript:showInfo('{{id}}',{{dataLock}},{{unLock}},{{audit}},{{disable}})" style="text-decoration: underline;">{{{name}}}  {{{enterpriseNo}}}</a></div>
+			<div>{{#truncation businessScope}}{{/truncation}}</div>
+			<div style="text-align: right;">{{modifyTime}}&nbsp;&nbsp;<i class="{{#if dataLock}}{{#if unLock}}am-icon-unlock{{else}}am-icon-lock{{/if}}{{else}}am-icon-eye{{/if}}" style="color: #FF9900;"></i></div>
+		</div>
+	</section>
+	</li>
+	{{/each}}
+</script>
+		<div id="_xuaxi_main_" style="max-width: 100%">
+			<div class="am-input-group am-animation-fade"
+				style="margin-bottom: 20px;">
+				<input type="text" class="am-form-field" name="search_key"
+					style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
+					placeholder="输入要查询开票信息的单位名称关键字"> <span
+					class="am-input-group-btn">
+					<button
+						class="am-btn am-btn-default am-btn-primary btn-loading-example"
+						type="button"
+						style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;"
+						id="search_"
+						data-am-loading="{spinner: 'circle-o-notch', loadingText: '加载中...'}">
+						<i class="am-icon-search">&nbsp;&nbsp;查询</i>
+					</button>
+				</span>
+			</div>
+
+			<div class="am-panel-group am-animation-fade" id="follow_"
+				style="text-align: left;">
+				<section class="am-panel am-panel-default"
+					style="border-radius: 8px;">
+					<header class="am-panel-hd">
+						<h4 class="am-panel-title"
+							data-am-collapse="{parent: '#follow_', target: '#follow_1'}">
+							单位动态&nbsp;&nbsp;<i class="am-icon-angle-double-down"></i>
+						</h4>
+					</header>
+					<div id="follow_1" class="am-panel-collapse am-collapse am-in">
+						<div class="am-panel-bd mystyle">您还关注的单位暂无动态</div>
+					</div>
+				</section>
+			</div>
+			
+<script id="template_table_" type="text/x-handlebars-template">
+	{{#each this}}
+		<tr style="cursor: pointer;">
+			<td>{{enterpriseName}}</td>
+			<td><div class="am-btn-group am-btn-group-xs" style="margin-bottom:0px;">
+					<button type="button" title="查看开票信息" class="am-btn am-btn-primary am-round" onclick="showInfo('{{enterpriseId}}',{{dataLock}},{{unLock}},{{audit}},{{disable}})"><i class="am-icon-eye"></i></button>
+					{{#if change}}
+					<button type="button" title="查看变更内容" class="am-btn am-btn-primary am-round" onclick="showChange('{{enterpriseId}}',{{audit}},{{disable}})"><i class="am-icon-angle-double-down"></i></button>
+					{{/if}}
+					<button type="button" title="取消关注" class="am-btn am-btn-primary am-round" onclick="unFollow('{{enterpriseId}}')"><i class="am-icon-remove"></i></button>
+				</div>
+			</td>
+		</tr>
+	{{/each}}
+</script>
+			<section class="am-panel am-panel-default am-animation-fade" id="follwList" style="text-align: left; ">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">关注列表</h3>(已关注数/可关注数)   	       <span id="followed"></span>/<span id="followedNum"></span>
+				</header>
+				<div class="am-panel-bd">
+					<table class="am-table am-table-hover am-table-striped" id="table_">
+						<thead>
+							<tr>
+								<th style="min-width: 60px;">单位名称</th>
+								<th style="min-width: 60px;">操作</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="zx-pagination" id="page_"></div>
+				</div>
+			</section>
+			
+
+			<section class="am-panel am-panel-default am-animation-fade" id="change_" style="text-align: left;display:none ">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">变更记录</h3>
+				</header>
+				<div class="am-panel-bd"style="padding-top: 0px;">
+					
+				</div>
+			</section>
+			<script id="template_1" type="text/x-handlebars-template">
+			<ul class="am-list am-animation-fade">
+				<!--{{#if arr1}}<li><a style="font-weight: bold;">单位基础信息变更</a></li>{{/if}}-->
+				{{#each arr1}}
+				  <li title="{{changeTime}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}"><a href="javascript:void(0)" class="am-text-truncate">{{#dateFormart changeTime}}{{/dateFormart}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}</a></li>
+				{{/each}}
+				<!--{{#if arr2}}<li><a style="font-weight: bold;">单位开票信息变更</a></li>{{/if}}-->
+				<!--{{#each arr2}}-->
+				  <!--<li title="{{changeTime}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}"><a href="javascript:void(0)" class="am-text-truncate">{{#dateFormart changeTime}}{{/dateFormart}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}</a></li>-->
+				<!--{{/each}}-->
+			</ul>
+			</script>
+			
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="tip_" style="text-align: left;">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">查询提示</h3>
+				</header>
+				<div class="am-panel-bd">
+					<div>查询提示：</div>
+					<div style="text-indent: 2em;">被查询单位出于自身的考虑，设置了查询条件。</div>
+					<div>查询条件分为：</div>
+					<div style="text-indent: 2em;">1.不设置条件：即输入单位名称后点击查询按钮即可以得到查询结果。</div>
+					<div style="text-indent: 2em;">2.输入查询码：由被查询单位提供，输入查询码后方可得到查询结果。</div>
+					<div style="text-indent: 2em;">注：已通过查询码查询且得到查询结果的，二次查询将无需输入查询码。</div>
+				</div>
+			</section>
+
+			<ul id="context_" class="am-avg-lg-2"></ul>
+			<div id="next_" class="am-u-sm-12"
+				style="display: none; padding-left: 0px;">
+				<section class="am-panel am-panel-default am-animation-fade"
+					style="text-align: center;">
+					<div class="am-panel-bd">
+						<a href='javascript:load()'
+							class='am-icon-btn am-warning am-icon-angle-down'></a>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.grid.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/js/Page.init.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.swiper.js"></script>
+</body>
+</html>

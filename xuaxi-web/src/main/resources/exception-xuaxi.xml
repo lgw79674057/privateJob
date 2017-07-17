@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exceptions>
+	<exception id="2001" responseCode="200" describe="{}">
+		<message language="zh-cn" value="{}" />
+	</exception>
+	<exception id="2002" responseCode="200" describe="不支持的文件类型">
+		<message language="zh-cn" value="您上传的文件不是图片，请重新上传" />
+	</exception>
+	<exception id="2100" responseCode="200" describe="手机对应多个账号">
+		<message language="zh-cn" value="您的手机号码对应多个账号" />
+	</exception>
+</exceptions>

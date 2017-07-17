@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>位号 WEIDCODE</title>
+<meta name="description" content="首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.swiper.css" />
+<style type="text/css">
+.click_ {
+	text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$.Grid.init({
+			table : "#table_",
+			url : $.CONTEXT_PATH + "api/v1/enterprise/getEnterprises",
+			pager : "#page_",
+			template : "#template_",
+			conditionForm : "#zx_search_form",
+			callBack : function(data) {
+				if (data && data.length > 0) {
+					$("input[type='checkbox']").uCheck();
+				}
+			}
+		});
+	}
+
+	function auditRemark (options) {
+		  options = options || {};
+		  options.title = options.title || '提示';
+		  options.placeholder = options.placeholder || '';
+		  options.content = options.content || '提示内容';
+		  options.onConfirm = options.onConfirm || function() {
+		    };
+		  options.onCancel = options.onCancel || function() {
+		    };
+
+		  var html = [];
+		  html.push('<div class="am-modal am-modal-prompt" tabindex="-1">');
+		  html.push('<div class="am-modal-dialog">');
+		  html.push('<div class="am-modal-hd">' + options.title + '</div>');
+		  html.push('<div class="am-modal-bd">' + options.content + '<textarea style="height:100px;" placeholder="'+options.placeholder+'" class="am-modal-prompt-input"></textarea></div>');
+		  html.push('<div class="am-modal-footer">');
+		  html.push('<span class="am-modal-btn" data-am-modal-cancel>取消</span>');
+		  html.push('<span class="am-modal-btn" data-am-modal-confirm>确定</span>');
+		  html.push('</div>');
+		  html.push('</div>');
+		  html.push('</div>');
+		  return $(html.join('')).appendTo('body').modal({
+		    onConfirm: function(e) {
+		    	options.onConfirm(e);
+		    },
+		    onCancel: function() {
+		    	options.onCancel();
+		    }
+		  }).on('closed.modal.amui', function(e) {
+			  $(this).remove();
+		  });
+		};
+	
+	function replaceCode(userId,enterpriseId,enterpriseNo) {
+		auditRemark({
+			title:"系统提示",
+			placeholder:"请输入要替换的位号",
+			content:"请输入要替换的位号(例如:CHN 212345678901,英文和数字之间有一个空格)",
+			onConfirm:function(e){
+				AMUI.dialog.confirm({
+					title : '系统提示',
+					content : '确定要替换吗?',
+					onConfirm : function() {
+						var $loading = AMUI.dialog.loading({
+							title : "正在提交"
+						});
+						$.RESTFUL.PATCH({
+							url : $.CONTEXT_PATH + "api/v1/user/replaceCode?userId="+userId+"&enterpriseId="+enterpriseId+"&replaceNo="+e.data+"&enterpriseNo="+enterpriseNo,
+							success : function(d) {
+								if (d.status == true) {
+									AMUI.dialog.success({
+										title : '系统提示',
+										content : "替换成功",
+										onConfirm : function() {
+											$.Grid.search('#table_');
+										}
+									});
+									return;
+								}
+								AMUI.dialog.error({
+									title : '系统开小差了',
+									content : d.error.message
+								});
+							},
+							error : function(response) {
+								AMUI.dialog.error({
+									title : '系统开小差了',
+									content : $.responseToJson(response).error.message
+								});
+							},
+							complete : function() {
+								$loading.modal('close');
+							}
+						});
+					}
+				});
+			}
+		});
+	}
+
+	function deleteUser(userId,enterpriseId) {
+		AMUI.dialog.confirm({
+			title:"系统提示",
+			content:"是否确认删除该账号",
+			onConfirm:function(){
+				var $loading = AMUI.dialog.loading({
+					title : "正在提交"
+				});
+				$.RESTFUL.DELETE({
+					url : $.CONTEXT_PATH + "api/v1/user/deleteUser?userId="+userId+"&enterpriseId="+enterpriseId,
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "删除成功",
+								onConfirm : function() {
+									$.Grid.search('#table_');
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		});
+	}
+
+	function pauseUser(enterpriseId,disable) {
+		AMUI.dialog.confirm({
+			title:"系统提示",
+			content:"是否"+(disable == 0 ? "启用" : "暂停") +"用户",
+			onConfirm:function(){
+				var $loading = AMUI.dialog.loading({
+					title : "正在提交"
+				});
+				$.RESTFUL.PATCH({
+					url : $.CONTEXT_PATH + "api/v1/user/pauseUser?enterpriseId="+enterpriseId+"&disable="+disable,
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "操作成功",
+								onConfirm : function() {
+									$.Grid.search('#table_');
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		});
+	}
+
+</script>
+</head>
+<body menu_id="audit">
+	<div id="zx-body" class="zx-body-center zx-body">
+		<div class="zx-body-title">
+			<i class="am-icon-home"></i>&nbsp;单位管理 <small>&nbsp;Enterprise
+				approval</small>
+		</div>
+		<div id="_xuaxi_main_" style="max-width: 100%;">
+			<section class="am-panel am-panel-default"
+				style="border-radius: 8px;">
+				<header class="am-panel-hd">
+					<h4 class="am-panel-title">
+						已审核通过单位
+						<div class="am-btn-group am-btn-group-xs zx-title-button-right"
+							style="top: auto; right: 40px;">
+							<button
+								class="am-btn am-btn-default am-round am-dropdown am-icon-search"
+								data-am-dropdown id="searchUserBtn">
+								<div class="am-dropdown-toggle zx-dropdown-button"
+									data-am-dropdown-toggle></div>
+								<div class="am-dropdown-content zx-search-dropdown-content">
+									<div class="am-dropdown-header">高级检索</div>
+									<form id="zx_search_form">
+										<div class="am-input-group zx-input-group">
+											<span class="am-input-group-label">单位名称</span><input
+												type="text" class="zx-form-field" name="name"
+												placeholder="请输入登录名">
+										</div>
+										<div class="zx-search-form-button">
+											<div class="am-btn am-btn-success am-round am-btn-sm"
+												onclick="$.Grid.search('#table_')">检索</div>
+
+											<div class="am-btn am-btn-danger am-round am-btn-sm"
+												onclick="$('#zx_search_form input[name=name]').val('')">重置</div>
+										</div>
+									</form>
+								</div>
+							</button>
+						</div>
+					</h4>
+				</header>
+				<script id="template_" type="text/x-handlebars-template">
+	{{#each this}}
+		<tr style="cursor: pointer;" onclick="$(this).find('input').uCheck('toggle')">
+			<!--<td><label class="am-checkbox am-warning"><input type="checkbox" value="{{id}}"></label></td>-->
+			<td>{{enterpriseNo}}</td>
+			<td class="click_" onclick="$.view('{{enterpriseId}}','0',true)">{{enterpriseName}}</td>
+			<td>{{#if certPic}}是{{else}}否{{/if}}</td>
+			<td class="am-hide-sm-down">{{followed}}</td>
+			<td class="am-hide-md-down">{{followedNum}}</td>
+			<td class="am-hide-md-down"><input type="button" value="删除" onclick="deleteUser('{{userId}}','{{enterpriseId}}')"/></td>
+			<td class="am-hide-md-down"><input type="button" value="替换" onclick="replaceCode('{{userId}}','{{enterpriseId}}','{{enterpriseNo}}')"/></td>
+			{{#if disable}}
+			<td class="am-hide-md-down"><input type="button" value="启用" onclick="pauseUser('{{enterpriseId}}',0)"/></td>{{else}}
+			<td class="am-hide-md-down"><input type="button" value="暂停" onclick="pauseUser('{{enterpriseId}}',1)"/></td>{{/if}}
+		</tr>
+	{{/each}}
+</script>
+				<div class="am-panel-bd">
+					<table class="am-table am-table-hover am-table-striped" id="table_">
+						<thead>
+							<tr>
+								<th style="min-width: 70px;">位号</th>
+								<th style="min-width: 60px;">单位名称</th>
+								<th style="max-width: 112px;">是否上传系统负责人身份证</th>
+								<th style="max-width: 96px;" class="am-hide-sm-down">已关注数量</th>
+								<th style="max-width: 96px;;" class="am-hide-md-down">可关注数量</th>
+								<th style="min-width: 60px;padding-left:72px;" class="am-hide-md-down" colspan="3" >操作</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="zx-pagination" id="page_"></div>
+				</div>
+			</section>
+			<div class="am-u-sm-12 zx-footer am-show-md-up">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号 </div>
+		</div>
+	</div>
+	<div class="zx-fixed-bar am-show-md-down">
+		<a href="#top" title="回到顶部"
+			style="color: #333; background-color: #ddd"
+			class="am-icon-btn am-icon-arrow-up"></a>
+	</div>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.grid.js"></script>
+	<script type="text/javascript" src="lib/js/Page.init1.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.swiper.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+</body>
+</html>

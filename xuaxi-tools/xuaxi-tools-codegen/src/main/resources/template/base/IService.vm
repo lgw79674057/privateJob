@@ -1,0 +1,9 @@
+package ${servicePackage};
+
+import com.xuaxi.framework.core.server.IBaseService;
+import ${domainPackage}.${className}Domain;
+import ${entityPackage}.${className}Entity;
+
+public interface I${className}Service extends IBaseService<${className}Domain, ${className}Entity, Long>{
+
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>位号WEIDCODE</title>
+<meta name="description" content="首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.switch.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.address.css" />
+<script type="text/javascript">
+	window.onload=function(){
+		$.RESTFUL.GET({
+			url : $.CONTEXT_PATH + "api/v1/invoice/byUser",
+			success : function(d) {
+				if (d.status == true) {
+					
+					$("input[name]").each(function(){
+// 						if(this.name=='address'){
+// 							var adds=d.result.address?d.result.address.split(" "):["",""];
+// 							$("input[name='address_a']").val(adds.length>0?adds[0]:"");
+// 							$("input[name='address']").val(adds.length>1?adds[1]:"");
+// 						}else{
+							if(this.name!='filePath'){
+								this.value=d.result[this.name];
+							}
+// 						}
+					});
+					$("#invoice_form").validator();
+// 					$("input[name='address_a']").address({
+// 						scrollToCenter : true
+// 					});
+					$("input[name='invoiceType']").bootstrapSwitch('state', d.result.invoiceType=="0"?true:false);
+				}
+			}
+		});
+	}
+	
+	function modifySave(){
+		var obj={
+				invoiceType : $("input[name='invoiceType']")
+						.is(':checked') ? "0" : "1",
+				enterpriseName : $("input[name='enterpriseName']")
+						.val(),
+				invoiceCode : $("input[name='invoiceCode']")
+						.val(),
+				address : /*$("input[name='address_a']").val()+" "+ */$("input[name='address']").val(),
+//				phone : $("input[name='phone']").val(),
+				bankName : $("input[name='bankName']")
+						.val(),
+//				detilBack : $("input[name='detilBack']")
+//						.val(),
+//				bancAccount : $("input[name='bancAccount']")
+//						.val(),
+				filePath : $("input[name='filePath']")
+						.val()
+			}
+		if(!$("input[name='invoiceType']").is(':checked')){
+			if($("input[name='filePath']").val()=='' ||$("input[name='filePath']").val()==null){
+				AMUI.dialog.error({
+					title : '系统提示',
+					content : '请上传发票附件'
+				});
+				return;
+			}
+		}
+		AMUI.dialog.confirm({
+			title : '系统提示',
+			content : '确定要修改？',
+			onConfirm : function() {
+				var $loading = AMUI.dialog.loading({
+					title : "正在提交"
+				});
+				$.RESTFUL.PATCH({
+					url : $.CONTEXT_PATH + "api/v1/invoice",
+					data : JSON.stringify(obj),
+					success : function(d) {
+						if (d.status == true) {
+							AMUI.dialog.success({
+								title : '系统提示',
+								content : "已提交审批",
+								onConfirm : function() {
+									window.location.reload()
+								}
+							});
+							return;
+						}
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : d.error.message
+						});
+					},
+					error : function(response) {
+						AMUI.dialog.error({
+							title : '系统开小差了',
+							content : $.responseToJson(response).error.message
+						});
+					},
+					complete : function() {
+						$loading.modal('close');
+					}
+				});
+			}
+		});
+	}
+	
+	function uploadFile(obj, btn) {
+ 		$(btn).attr("disabled", "disabled");
+ 		setTimeout(function(){
+ 			$(btn).removeAttr("disabled");
+ 		},3000);
+		$.Upload.imgUpload({
+			url : $.CONTEXT_PATH + "api/v1/file/upload",
+			callBack : function(v) {
+				obj.val(v);
+				obj.removeAttr("readonly");
+				obj.focus();
+				obj.blur();
+				obj.attr("readonly", "readonly");
+ 				$(btn).removeAttr("disabled");
+			}
+		});
+	}
+</script>
+</head>
+<body menu_id="invoice">
+	<div id="zx-body" class="zx-body-center zx-body">
+		<div class="zx-body-title">
+			<i class="am-icon-home"></i>&nbsp;单位开票信息 <small>&nbsp;Enterprise
+				Invoice Information</small>
+		</div>
+		<div id="_xuaxi_main_" style="max-width: 100%;">
+				<section class="am-panel am-panel-default"
+					style="border-radius: 8px;">
+					<header class="am-panel-hd">
+						<h4 class="am-panel-title">单位开票信息</h4>
+					</header>
+					<div class="am-panel-bd">
+						<form id="invoice_form">
+							<div class="am-input-group zx-input-group">
+								<span class="am-input-group-label">纳税人</span> <input
+									name="invoiceType" type="checkbox" data-am-switch
+									data-off-text="一般纳税人" data-on-text="非一般纳税人"
+									data-handle-width="60" onchange="if(this.checked){$('div[ns]').hide()}else{$('div[ns]').show()}"/>
+								<small>&nbsp;&nbsp;请点击或滑动选择纳税人类型</small>
+							</div>
+							<div class="am-input-group zx-input-group">
+								<span class="am-input-group-label">单位名称<span class="required"></span></span><input type="text"
+									class="zx-form-field" name="enterpriseName" readonly="readonly"
+									placeholder="请输入单位名称" required minlength="2" maxlength="128">
+							</div>
+							<div class="am-input-group zx-input-group">
+								<span class="am-input-group-label" style="width: 105px;padding-left: 0px">纳税人识别号<span class="required"></span></span><input type="text"
+									class="zx-form-field" name="invoiceCode" placeholder="请输入纳税识别号"
+									required minlength="15" maxlength="18">
+							</div>
+							<div class="am-input-group zx-input-group" ns>
+								
+								<span class="am-input-group-label" style="width: 135px;">单位地址和电话<span class="required"></span></span>
+								
+<!-- 								<input -->
+<!-- 									class="zx-form-field" type="text" name="address_a" -->
+<!-- 									placeholder="选择地址" readonly="readonly" style="cursor: pointer;width: 75%"> -->
+<!-- 								<button type="button" class="am-btn am-topbar-btn am-btn-sm" -->
+<!-- 									style="border-radius: 4px; width: 20%; margin-left: 4%;" -->
+<!-- 									onclick="$('#invoice_form input[name=address_a]').trigger('click')"> -->
+<!-- 									<i class="am-icon-home"></i></button> -->
+								<input
+									class="zx-form-field" type="text" name="address" required="required"
+									placeholder="请输入详细地址和单位电话">
+								
+								
+							</div>
+							<!--<div class="am-input-group zx-input-group" ns>-->
+								<!--<span class="am-input-group-label">单位电话<span class="required"></span></span><input type="text" required="required"-->
+									<!--class="zx-form-field" name="phone" placeholder="请输入单位电话"-->
+									<!--maxlength="24">-->
+							<!--</div>-->
+							<div class="am-input-group zx-input-group" ns>
+								<span class="am-input-group-label" style="width: 135px;">开户银行和账号<span class="required"></span></span><input type="text"
+									class="zx-form-field" name="bankName" placeholder="请输入开户银行和账号"
+									required minlength="2" maxlength="128">
+							</div>
+<!-- 							<div class="am-input-group zx-input-group" ns> -->
+<!-- 								<span class="am-input-group-label">开户支行</span><input type="text" -->
+<!-- 									class="zx-form-field" name="detilBack" placeholder="请输入开户支行" -->
+<!-- 									maxlength="256"> -->
+<!-- 							</div> -->
+							<!--<div class="am-input-group zx-input-group" ns>-->
+								<!--<span class="am-input-group-label">账号<span class="required"></span></span><input type="text"-->
+									<!--class="zx-form-field" name="bancAccount" placeholder="请输入账号"-->
+									<!--required minlength="2" maxlength="21">-->
+							<!--</div>-->
+							<div class="am-input-group zx-input-group" ns>
+								<span class="am-input-group-label">发票附件<span class="required"></span></span><input type="text" required="required"
+									class="zx-form-field" name="filePath" placeholder="请上传发票附件"
+									readonly="readonly" maxlength="256" style="width: 75%">
+								<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+									style="border-radius: 4px; width: 20%; margin-left: 4%;"
+									onclick="uploadFile($('input[name=filePath]'),this)">浏览</button></br>
+							</div>
+							<div class="am-input-group zx-input-group" ns>
+								<span class="am-input-group-label" style="width: 95px;">发票说明:<span class="required"></span></span>
+								<small style="color: #838FA1;">说明: </small></br>
+								<small style="color: #838FA1;">证明资料照片内相关信息也应与您上述所填写内容一致。</small></br>
+								<small style="color: #838FA1;"> 上传本单位增值税一般纳税人证明材料可选择以下形式中一种即可。</small></br>
+								<small style="color: #838FA1;"> 形式一：本单位增值税发票税控开票软件中，增值税专用发票开票界面的全截屏（建议.jpg格式），如下图</small>
+								<div>
+									<img src="lib/images/xingshi1.png" style="width:520px;">
+								</div>
+
+								<small style="color: #838FA1;">形式二：本单位已经开出的增值税专用发票记账联实物照片（在拍照前可根据您自己的需要，将购货方的信息及商品信息进行遮盖，建议.jpg格式）如下图 </small></br>
+								<!--<small style="color: #838FA1;">1、拷屏可以将收款人、复核、开票人隐去，其他信息需要保留。</small></br>-->
+								<!--<small style="color: #838FA1;">2、开票日期距离上传日期应不超过3个工作日。</small></br>-->
+								<!--</br>&nbsp;-->
+								<!--<small style="color: #838FA1;">发票上传方法二（推荐手机端使用）：</small></br>-->
+								<!--<small style="color: #838FA1;">1、将已开出的增值税专用发票的“记账联”进行拍照 。</small></br>-->
+								<!--<small style="color: #838FA1;">2、直接将拍照的图片进行上传。 如：  </small>-->
+								<div>
+									<img src="lib/images/xingshi2.png" style="max-width: 520px;">
+								</div>
+							</div>
+						</form>
+						<div align="center">
+							<input type="button" class="am-btn am-btn-secondary" value="保存"
+								style="width: 90%; border-radius: 4px"
+								onclick="modifySave()">
+						</div>
+					</div>
+				</section>
+		</div>
+	</div>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/js/Page.init.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.switch.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.upload.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.address.js"></script>
+</body>
+</html>

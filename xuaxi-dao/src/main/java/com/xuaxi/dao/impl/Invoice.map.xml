@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.InvoiceDaoImpl">
+	<resultMap id="no_invoice_map" type="com.xuaxi.entity.InvoiceEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="enterpriseId" column="enterpriseId" javaType="java.lang.Long" />
+		<result property="invoiceType" column="invoiceType" javaType="java.lang.String" />
+		<result property="enterpriseName" column="enterpriseName" javaType="java.lang.String" />
+		<result property="viewCode" column="viewCode" javaType="java.lang.String" />
+		<result property="dataLock" column="dataLock" javaType="java.lang.Boolean" />
+		<result property="invoiceCode" column="invoiceCode" javaType="java.lang.String" />
+		<result property="address" column="address" javaType="java.lang.String" />
+		<result property="phone" column="phone" javaType="java.lang.String" />
+		<result property="bankName" column="bankName" javaType="java.lang.String" />
+		<result property="detilBack" column="detilBack" javaType="java.lang.String" />
+		<result property="bancAccount" column="bancAccount" javaType="java.lang.String" />
+		<result property="filePath" column="filePath" javaType="java.lang.String" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`enterpriseId`,t.`invoiceType`,t.`enterpriseName`,t.`viewCode`,t.`dataLock`,t.`invoiceCode`,t.`address`,t.`phone`,t.`bankName`,t.`detilBack`,t.`bancAccount`,t.`filePath`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		no_invoice(
+			`id`
+			,`enterpriseId`
+			,`invoiceType`
+			,`enterpriseName`
+			,`viewCode`
+			,`dataLock`
+			,`invoiceCode`
+			,`address`
+			,`phone`
+			,`bankName`
+			,`detilBack`
+			,`bancAccount`
+			,`filePath`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.enterpriseId != null">#{item.enterpriseId,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.invoiceType != null">#{item.invoiceType,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enterpriseName != null">#{item.enterpriseName,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.viewCode != null">#{item.viewCode,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.dataLock != null">#{item.dataLock,javaType=java.lang.Boolean}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.invoiceCode != null">#{item.invoiceCode,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address != null">#{item.address,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.phone != null">#{item.phone,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.bankName != null">#{item.bankName,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.detilBack != null">#{item.detilBack,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.bancAccount != null">#{item.bancAccount,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.filePath != null">#{item.filePath,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP())
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.InvoiceEntity">
+		update no_invoice
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="enterpriseId!=null">`enterpriseId`=#{enterpriseId,javaType=java.lang.Long},</if>
+			<if test="invoiceType!=null">`invoiceType`=#{invoiceType,javaType=java.lang.String},</if>
+			<if test="enterpriseName!=null">`enterpriseName`=#{enterpriseName,javaType=java.lang.String},</if>
+			<if test="viewCode!=null">`viewCode`=#{viewCode,javaType=java.lang.String},</if>
+			<if test="dataLock!=null">`dataLock`=#{dataLock,javaType=java.lang.Boolean},</if>
+			<if test="invoiceCode!=null">`invoiceCode`=#{invoiceCode,javaType=java.lang.String},</if>
+			<if test="address!=null">`address`=#{address,javaType=java.lang.String},</if>
+			<if test="phone!=null">`phone`=#{phone,javaType=java.lang.String},</if>
+			<if test="bankName!=null">`bankName`=#{bankName,javaType=java.lang.String},</if>
+			<if test="detilBack!=null">`detilBack`=#{detilBack,javaType=java.lang.String},</if>
+			<if test="bancAccount!=null">`bancAccount`=#{bancAccount,javaType=java.lang.String},</if>
+			<if test="filePath!=null">`filePath`=#{filePath,javaType=java.lang.String},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update no_invoice
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="no_invoice_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from no_invoice t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		<if test="sortColumn!=null and sortColumn.size()>0">
+			order by
+			<foreach collection="sortColumn" item="item" index="index"
+				separator=",">
+				${item.column} ${item.operator}
+			</foreach>
+		</if>
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from no_invoice t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

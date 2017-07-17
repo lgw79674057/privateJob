@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>位号 WEIDCODE</title>
+<meta name="description" content="首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.swiper.css" />
+<style type="text/css">
+.click_ {
+	text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$.Grid.init({
+			table : "#table_",
+			url : $.CONTEXT_PATH + "api/v1/enterprise",
+			pager : "#page_",
+			template : "#template_",
+			conditionForm : "#zx_search_form",
+			callBack : function(data) {
+				if (data && data.length > 0) {
+					$("input[type='checkbox']").uCheck();
+				}
+			}
+		});
+		Handlebars.registerHelper("dateFormart", function(v1, options) {
+			if(v1&&v1.length>10){
+				return v1.substring(0,10);
+			}
+			return v1;
+		});
+	}
+
+	function auditRemark (options) {
+		  options = options || {};
+		  options.title = options.title || '提示';
+		  options.placeholder = options.placeholder || '';
+		  options.content = options.content || '提示内容';
+		  options.onConfirm = options.onConfirm || function() {
+		    };
+		  options.onCancel = options.onCancel || function() {
+		    };
+
+		  var html = [];
+		  html.push('<div class="am-modal am-modal-prompt" tabindex="-1">');
+		  html.push('<div class="am-modal-dialog">');
+		  html.push('<div class="am-modal-hd">' + options.title + '</div>');
+		  html.push('<div class="am-modal-bd">' + options.content + '<textarea style="height:100px;" placeholder="'+options.placeholder+'" class="am-modal-prompt-input"></textarea></div>');
+		  html.push('<div class="am-modal-footer">');
+		  html.push('<span class="am-modal-btn" data-am-modal-cancel>取消</span>');
+		  html.push('<span class="am-modal-btn" data-am-modal-confirm>确定</span>');
+		  html.push('</div>');
+		  html.push('</div>');
+		  html.push('</div>');
+		  return $(html.join('')).appendTo('body').modal({
+		    onConfirm: function(e) {
+		    	options.onConfirm(e);
+		    },
+		    onCancel: function() {
+		    	options.onCancel();
+		    }
+		  }).on('closed.modal.amui', function(e) {
+			  $(this).remove();
+		  });
+		};
+	
+	function audit(f) {
+		var ids = [];
+		$("input[type='checkbox']:checked").each(function() {
+			ids.push(this.value)
+		});
+		if (ids.length == 0) {
+			AMUI.dialog.error({
+				title : '系统提示',
+				content : '请选择需要审批的单位'
+			});
+			return;
+		}
+		
+		auditRemark({
+			title:"审批意见",
+			placeholder:"请输入审批意见",
+			content:"请输入审核"+ (f == 0 ? "通过" : "不通过") +"意见",
+			onConfirm:function(e){
+				AMUI.dialog.confirm({
+					title : '系统提示',
+					content : '确定要审批选中单位？（' + (f == 0 ? "通过" : "不通过") + "）",
+					onConfirm : function() {
+						var $loading = AMUI.dialog.loading({
+							title : "正在提交"
+						});
+						$.RESTFUL.PATCH({
+							url : $.CONTEXT_PATH + "api/v1/enterprise/audit/"+f,
+							data:JSON.stringify({auditRemark:e.data,ids:ids}),
+							success : function(d) {
+								if (d.status == true) {
+									AMUI.dialog.success({
+										title : '系统提示',
+										content : "审批成功",
+										onConfirm : function() {
+											$.Grid.search('#table_');
+										}
+									});
+									return;
+								}
+								AMUI.dialog.error({
+									title : '系统开小差了',
+									content : d.error.message
+								});
+							},
+							error : function(response) {
+								AMUI.dialog.error({
+									title : '系统开小差了',
+									content : $.responseToJson(response).error.message
+								});
+							},
+							complete : function() {
+								$loading.modal('close');
+							}
+						});
+					}
+				});
+			}
+		});
+	}
+	var thisShow;
+	function showChange(id){
+		if(thisShow==id){
+			$("#change_").toggle();
+		}else{
+			thisShow=id;
+			if(templateChangHtml[id]){
+				$("#change_ .am-panel-bd").html(templateChangHtml[id]);
+			}else{
+//				changeLoading();
+				$.RESTFUL.GET({
+					url : $.CONTEXT_PATH + "api/v1/changerecord/"+id+"/byUser",
+					success : function(d) {
+						if (d.status == true) {
+							$("#change_").show();
+							var arr1=[];
+							var arr2=[];
+							for(var i=0;i<d.result.length;i++){
+//								if(d.result[i].changeType==0||d.result[i].changeType=='0'){
+									arr1.push(d.result[i]);
+//								}else{
+//									arr2.push(d.result[i]);
+//								}
+							}
+							var	html=Handlebars.compile($("#template_1").html())({arr1:arr1});
+							templateChangHtml[id]=html;
+							$("#change_ .am-panel-bd").html(html);
+						}else{
+							AMUI.dialog.error({
+								title : '系统提示',
+								content : '审核中,稍后查看!'
+							});
+						}
+					}
+				});
+			}
+		}
+	}
+
+	var templateChangHtml={};
+
+	function changeLoading(){
+		$("#change_ .am-panel-bd").html('<div align="center"><i class="am-icon-spinner am-icon-spin" style="font-size:50px;"></i><div>');
+	}
+</script>
+</head>
+<body menu_id="audit">
+	<div id="zx-body" class="zx-body-center zx-body">
+		<div class="zx-body-title">
+			<i class="am-icon-home"></i>&nbsp;单位信息审批 <small>&nbsp;Enterprise
+				approval</small>
+		</div>
+		<div id="_xuaxi_main_" style="max-width: 100%;">
+			<section class="am-panel am-panel-default"
+				style="border-radius: 8px;">
+				<header class="am-panel-hd">
+					<h4 class="am-panel-title">
+						待审批单位
+						<div class="am-btn-group am-btn-group-xs zx-title-button-right"
+							style="top: auto; right: 40px;">
+							<button
+								class="am-btn am-btn-default am-round am-dropdown am-icon-search"
+								data-am-dropdown id="searchUserBtn">
+								<div class="am-dropdown-toggle zx-dropdown-button"
+									data-am-dropdown-toggle></div>
+								<div class="am-dropdown-content zx-search-dropdown-content">
+									<div class="am-dropdown-header">高级检索</div>
+									<form id="zx_search_form">
+										<div class="am-input-group zx-input-group">
+											<span class="am-input-group-label">单位名称</span><input
+												type="text" class="zx-form-field" name="name__like"
+												placeholder="请输入登录名">
+										</div>
+										<div class="zx-search-form-button">
+											<div class="am-btn am-btn-success am-round am-btn-sm"
+												onclick="$.Grid.search('#table_')">检索</div>
+
+											<div class="am-btn am-btn-danger am-round am-btn-sm"
+												onclick="$('#zx_search_form input[name=name]').val('')">重置</div>
+										</div>
+									</form>
+								</div>
+							</button>
+							<button type="button" class="am-btn am-btn-default am-round"
+								onclick="audit(0)">
+								<i class="am-icon-check" style="color: #4db14d"></i>
+							</button>
+							<button type="button" class="am-btn am-btn-default am-round"
+								onclick="audit(1)">
+								<i class="am-icon-remove" style="color: #dd514c;"></i>
+							</button>
+						</div>
+					</h4>
+				</header>
+				<script id="template_" type="text/x-handlebars-template">
+	{{#each this}}
+		<tr style="cursor: pointer;" onclick="$(this).find('input').uCheck('toggle')">
+			<td><label class="am-checkbox am-warning"><input type="checkbox" value="{{id}}"></label></td>
+			<td>{{enterpriseNo}}</td>
+			<td class="click_" onclick="$.view('{{id}}','0',true)">{{name}}</td>
+			<td>{{legalPerson}}</td>
+			<td class="am-hide-sm-down">{{address1}}</td>
+			<td class="am-hide-md-down">{{contacts}}</td>
+			<td class="am-hide-md-down">{{cPhone}}</td>
+			<td class="am-hide-md-down"><button type="button" title="查看变更内容" class="am-btn am-btn-primary am-round" onclick="showChange('{{id}}')"><i class="am-icon-angle-double-down"></i></button></td>
+		</tr>
+	{{/each}}
+</script>
+				<div class="am-panel-bd">
+					<table class="am-table am-table-hover am-table-striped" id="table_">
+						<thead>
+							<tr>
+								<th></th>
+								<th style="min-width: 70px;">位号</th>
+								<th style="min-width: 60px;">单位名称</th>
+								<th style="min-width: 100px;">法人代表或负责人</th>
+								<th style="min-width: 60px;" class="am-hide-sm-down">单位地址和电话</th>
+								<th style="min-width: 60px;" class="am-hide-md-down">联系人</th>
+								<th style="min-width: 60px;" class="am-hide-md-down">联系电话</th>
+								<th style="min-width: 60px;" class="am-hide-md-down">操作</th>
+							</tr>
+						</thead>
+					</table>
+					<div class="zx-pagination" id="page_"></div>
+				</div>
+			</section>
+			<section class="am-panel am-panel-default am-animation-fade" id="change_" style="text-align: left;display:none ">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">变更记录</h3>
+				</header>
+				<div class="am-panel-bd"style="padding-top: 0px;">
+
+				</div>
+			</section>
+			<script id="template_1" type="text/x-handlebars-template">
+				<ul class="am-list am-animation-fade">
+					<!--{{#if arr1}}<li><a style="font-weight: bold;">单位基础信息变更</a></li>{{/if}}-->
+					{{#each arr1}}
+					<li title="{{changeTime}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}"><a href="javascript:void(0)" class="am-text-truncate">{{#dateFormart changeTime}}{{/dateFormart}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}</a></li>
+					{{/each}}
+					<!--{{#if arr2}}<li><a style="font-weight: bold;">单位开票信息变更</a></li>{{/if}}-->
+					<!--{{#each arr2}}-->
+					<!--<li title="{{changeTime}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}"><a href="javascript:void(0)" class="am-text-truncate">{{#dateFormart changeTime}}{{/dateFormart}}&nbsp;将&nbsp;{{attributeText}}&nbsp;&nbsp;从&nbsp;&nbsp;{{beforeValue}}&nbsp;&nbsp;修改为&nbsp;&nbsp;{{afterValue}}</a></li>-->
+					<!--{{/each}}-->
+				</ul>
+			</script>
+			<div class="am-u-sm-12 zx-footer am-show-md-up">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号 </div>
+		</div>
+	</div>
+	<div class="zx-fixed-bar am-show-md-down">
+		<a href="#top" title="回到顶部"
+			style="color: #333; background-color: #ddd"
+			class="am-icon-btn am-icon-arrow-up"></a>
+	</div>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.grid.js"></script>
+	<script type="text/javascript" src="lib/js/Page.init1.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.swiper.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+
+</body>
+</html>

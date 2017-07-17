@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.EnterpriseDaoImpl">
+	<resultMap id="no_enterprise_map" type="com.xuaxi.entity.EnterpriseEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="enterpriseNo" column="enterpriseNo" javaType="java.lang.String" />
+		<result property="name" column="name" javaType="java.lang.String" />
+		<result property="abbreviation" column="abbreviation" javaType="java.lang.String" />
+		<result property="enName" column="enName" javaType="java.lang.String" />
+		<result property="enAbbreviation" column="enAbbreviation" javaType="java.lang.String" />
+		<result property="address1" column="address1" javaType="java.lang.String" />
+		<result property="enAddress1" column="enAddress1" javaType="java.lang.String" />
+		<result property="enAddress2" column="enAddress2" javaType="java.lang.String" />
+		<result property="address2" column="address2" javaType="java.lang.String" />
+		<result property="enAddress3" column="enAddress3" javaType="java.lang.String" />
+		<result property="address3" column="address3" javaType="java.lang.String" />
+		<result property="phone" column="phone" javaType="java.lang.String" />
+		<result property="contacts" column="contacts" javaType="java.lang.String" />
+		<result property="cPhone" column="cPhone" javaType="java.lang.String" />
+		<result property="fax" column="fax" javaType="java.lang.String" />
+		<result property="businessScope" column="businessScope" javaType="java.lang.String" />
+		<result property="legalPerson" column="legalPerson" javaType="java.lang.String" />
+		<result property="viewCode" column="viewCode" javaType="java.lang.String" />
+		<result property="dataLock" column="dataLock" javaType="java.lang.Boolean" />
+		<result property="disable" column="disable" javaType="java.lang.Boolean" />
+		<result property="audit" column="audit" javaType="java.lang.Boolean" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+		
+		<result property="auditRemark" column="auditRemark" javaType="java.lang.String" />
+		<result property="fullAddress1" column="fullAddress1" javaType="java.lang.String" />
+		<result property="fullAddress2" column="fullAddress2" javaType="java.lang.String" />
+		<result property="fullAddress3" column="fullAddress3" javaType="java.lang.String" />
+		<result property="address1Id" column="address1Id" javaType="java.lang.Long" />
+		<result property="address2Id" column="address2Id" javaType="java.lang.Long" />
+		<result property="address3Id" column="address3Id" javaType="java.lang.Long" />
+		<result property="enterprisePic" column="enterprisePic" javaType="java.lang.String" />
+	</resultMap>
+	<resultMap id="no_enterprise_map1" type="com.xuaxi.entity.EnterpriseEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="enterpriseNo" column="enterpriseNo" javaType="java.lang.String" />
+		<result property="name" column="name" javaType="java.lang.String" />
+		<result property="abbreviation" column="abbreviation" javaType="java.lang.String" />
+		<result property="enName" column="enName" javaType="java.lang.String" />
+		<result property="enAbbreviation" column="enAbbreviation" javaType="java.lang.String" />
+		<result property="address1" column="address1" javaType="java.lang.String" />
+		<result property="enAddress1" column="enAddress1" javaType="java.lang.String" />
+		<result property="enAddress2" column="enAddress2" javaType="java.lang.String" />
+		<result property="address2" column="address2" javaType="java.lang.String" />
+		<result property="enAddress3" column="enAddress3" javaType="java.lang.String" />
+		<result property="address3" column="address3" javaType="java.lang.String" />
+		<result property="phone" column="phone" javaType="java.lang.String" />
+		<result property="contacts" column="contacts" javaType="java.lang.String" />
+		<result property="cPhone" column="cPhone" javaType="java.lang.String" />
+		<result property="fax" column="fax" javaType="java.lang.String" />
+		<result property="businessScope" column="businessScope" javaType="java.lang.String" />
+		<result property="legalPerson" column="legalPerson" javaType="java.lang.String" />
+		<result property="viewCode" column="viewCode" javaType="java.lang.String" />
+		<result property="dataLock" column="dataLock" javaType="java.lang.Boolean" />
+		<result property="disable" column="disable" javaType="java.lang.Boolean" />
+		<result property="audit" column="audit" javaType="java.lang.Boolean" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+		<result property="unLock" column="unLock" javaType="java.lang.Boolean" />
+		<result property="auditRemark" column="auditRemark" javaType="java.lang.String" />
+		<result property="fullAddress1" column="fullAddress1" javaType="java.lang.String" />
+		<result property="fullAddress2" column="fullAddress2" javaType="java.lang.String" />
+		<result property="fullAddress3" column="fullAddress3" javaType="java.lang.String" />
+		<result property="address1Id" column="address1Id" javaType="java.lang.Long" />
+		<result property="address2Id" column="address2Id" javaType="java.lang.Long" />
+		<result property="address3Id" column="address3Id" javaType="java.lang.Long" />
+		<result property="enterprisePic" column="enterprisePic" javaType="java.lang.String" />
+	</resultMap>
+	<resultMap id="user_enterprise_map" type="com.xuaxi.entity.UserEnterpriseEntity">
+		<result property="enterpriseName" column="enterpriseName" javaType="java.lang.String" />
+		<result property="enterpriseNo" column="enterpriseNo" javaType="java.lang.String" />
+		<result property="enterpriseId" column="enterpriseId" javaType="java.lang.Long" />
+		<result property="userId" column="userId" javaType="java.lang.Long" />
+		<result property="userName" column="userName" javaType="java.lang.String" />
+		<result property="certPic" column="certPic" javaType="java.lang.String" />
+		<result property="followed" column="followed" javaType="java.lang.Integer" />
+		<result property="followedNum" column="followedNum" javaType="java.lang.Integer" />
+		<result property="disable" column="disable" javaType="java.lang.Boolean" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`enterpriseNo`,t.`name`,t.`abbreviation`,t.`enName`,t.`enAbbreviation`,t.`address1`,t.`enAddress1`,t.`enAddress2`,t.`address2`,t.`enAddress3`,t.`address3`,t.`phone`,t.`contacts`,t.`cPhone`,t.`fax`,t.`businessScope`,t.`legalPerson`,t.`viewCode`,t.`dataLock`,t.`disable`,t.`audit`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`,t.address1Id,t.address2Id,t.address3Id,t.fullAddress1,t.fullAddress2,t.fullAddress3,t.auditRemark,t.enterprisePic</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		no_enterprise(
+			`id`
+			,`enterpriseNo`
+			,`name`
+			,`abbreviation`
+			,`enName`
+			,`enAbbreviation`
+			,`address1`
+			,`enAddress1`
+			,`enAddress2`
+			,`address2`
+			,`enAddress3`
+			,`address3`
+			,`phone`
+			,`contacts`
+			,`cPhone`
+			,`fax`
+			,`businessScope`
+			,`legalPerson`
+			,`viewCode`
+			,`dataLock`
+			,`disable`
+			,`audit`
+			,`address1Id`
+			,`address2Id`
+			,`address3Id`
+			,`fullAddress1`
+			,`fullAddress2`
+			,`fullAddress3`
+			,`auditRemark`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`,enterprisePic)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.enterpriseNo != null">#{item.enterpriseNo,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.name != null">#{item.name,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.abbreviation != null">#{item.abbreviation,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enName != null">#{item.enName,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enAbbreviation != null">#{item.enAbbreviation,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address1 != null">#{item.address1,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enAddress1 != null">#{item.enAddress1,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enAddress2 != null">#{item.enAddress2,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address2 != null">#{item.address2,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.enAddress3 != null">#{item.enAddress3,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address3 != null">#{item.address3,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.phone != null">#{item.phone,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.contacts != null">#{item.contacts,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.cPhone != null">#{item.cPhone,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.fax != null">#{item.fax,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.businessScope != null">#{item.businessScope,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.legalPerson != null">#{item.legalPerson,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.viewCode != null">#{item.viewCode,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.dataLock != null">#{item.dataLock,javaType=java.lang.Boolean}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.disable != null">#{item.disable,javaType=java.lang.Boolean}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.audit != null">#{item.audit,javaType=java.lang.Boolean}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address1Id != null">#{item.address1Id,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address2Id != null">#{item.address2Id,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.address3Id != null">#{item.address3Id,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.fullAddress1 != null">#{item.fullAddress1,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.fullAddress2 != null">#{item.fullAddress2,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.fullAddress3 != null">#{item.fullAddress3,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.auditRemark != null">#{item.auditRemark,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			<choose><when test="item.enterprisePic != null">#{item.enterprisePic,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>)
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.EnterpriseEntity">
+		update no_enterprise
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="enterpriseNo!=null">`enterpriseNo`=#{enterpriseNo,javaType=java.lang.String},</if>
+			<if test="name!=null">`name`=#{name,javaType=java.lang.String},</if>
+			<if test="abbreviation!=null">`abbreviation`=#{abbreviation,javaType=java.lang.String},</if>
+			<if test="enName!=null">`enName`=#{enName,javaType=java.lang.String},</if>
+			<if test="enAbbreviation!=null">`enAbbreviation`=#{enAbbreviation,javaType=java.lang.String},</if>
+			<if test="address1!=null">`address1`=#{address1,javaType=java.lang.String},</if>
+			<if test="enAddress1!=null">`enAddress1`=#{enAddress1,javaType=java.lang.String},</if>
+			<if test="enAddress2!=null">`enAddress2`=#{enAddress2,javaType=java.lang.String},</if>
+			<if test="address2!=null">`address2`=#{address2,javaType=java.lang.String},</if>
+			<if test="enAddress3!=null">`enAddress3`=#{enAddress3,javaType=java.lang.String},</if>
+			<if test="address3!=null">`address3`=#{address3,javaType=java.lang.String},</if>
+			<if test="phone!=null">`phone`=#{phone,javaType=java.lang.String},</if>
+			<if test="contacts!=null">`contacts`=#{contacts,javaType=java.lang.String},</if>
+			<if test="cPhone!=null">`cPhone`=#{cPhone,javaType=java.lang.String},</if>
+			<if test="fax!=null">`fax`=#{fax,javaType=java.lang.String},</if>
+			<if test="businessScope!=null">`businessScope`=#{businessScope,javaType=java.lang.String},</if>
+			<if test="legalPerson!=null">`legalPerson`=#{legalPerson,javaType=java.lang.String},</if>
+			<if test="viewCode!=null">`viewCode`=#{viewCode,javaType=java.lang.String},</if>
+			<if test="dataLock!=null">`dataLock`=#{dataLock,javaType=java.lang.Boolean},</if>
+			<if test="disable!=null">`disable`=#{disable,javaType=java.lang.Boolean},</if>
+			<if test="audit!=null">`audit`=#{audit,javaType=java.lang.Boolean},</if>
+			<if test="fullAddress1!=null">`fullAddress1`=#{fullAddress1,javaType=java.lang.String},</if>
+			<if test="fullAddress2!=null">`fullAddress2`=#{fullAddress2,javaType=java.lang.String},</if>
+			<if test="fullAddress3!=null">`fullAddress3`=#{fullAddress3,javaType=java.lang.String},</if>
+			<if test="auditRemark!=null">`auditRemark`=#{auditRemark,javaType=java.lang.String},</if>
+			<if test="address1Id!=null">`address1Id`=#{address1Id,javaType=java.lang.Long},</if>
+			<if test="address2Id!=null">`address2Id`=#{address2Id,javaType=java.lang.Long},</if>
+			<if test="address3Id!=null">`address3Id`=#{address3Id,javaType=java.lang.Long},</if>
+			<if test="enterprisePic!=null">`enterprisePic`=#{enterprisePic,javaType=java.lang.String},</if>
+			<if test="deleteTag!=null">`deleteTag`=#{deleteTag,javaType=java.lang.Boolean},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update no_enterprise
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="no_enterprise_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from no_enterprise t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		<if test="sortColumn!=null and sortColumn.size()>0">
+			order by
+			<foreach collection="sortColumn" item="item" index="index"
+				separator=",">
+				${item.column} ${item.operator}
+			</foreach>
+		</if>
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from no_enterprise t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	<select id="search" resultMap="no_enterprise_map1"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />,(case when t1.id is not null then 1 else 0 end) as `unLock`
+		from no_enterprise t
+		left join no_viewpass t1 on t1.userId=#{userId} and t.id=t1.enterpriseId and t1.`deleteTag`=false
+		<where>
+			t.`deleteTag`=false
+			and t.`name` like #{key}
+		</where>
+		limit #{startNum},#{pageSize}
+	</select>
+
+	<select id="search_count" resultType="long"
+		parameterType="map">
+		select
+		count(1)
+		from no_enterprise t
+		<where>
+			t.`deleteTag`=false
+			and t.`name` like #{key}
+		</where>
+	</select>
+	<select id="findEnterprises" resultMap="user_enterprise_map" parameterType="map">
+		SELECT
+			en.`name` as enterpriseName,
+			en.enterpriseNo,
+			en.id as enterpriseId,
+			us.id as userId,
+			us.loginName as userName,
+			us.certPic,
+			us.followed,
+			us.followedNum,
+			en.disable
+		FROM
+			no_enterprise en
+		JOIN no_user us ON en.id = us.enterpriseId
+		AND en.deleteTag = 0
+		AND us.deleteTag = 0
+		and en.audit=1
+		<where>
+			en.`name` like #{key}
+		</where>
+		limit #{startNum},#{pageSize}
+	</select>
+	<select id="findEnterprisesCount" resultType="long" parameterType="map">
+		SELECT
+			count(1)
+		FROM
+			no_enterprise en
+		JOIN no_user us ON en.id = us.enterpriseId
+		AND en.deleteTag = 0
+		AND us.deleteTag = 0
+		and en.audit=1
+		<where>
+			en.`name` like #{key}
+		</where>
+	</select>
+</mapper>

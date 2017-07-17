@@ -1,0 +1,8 @@
+package ${daoPackage};
+
+import com.xuaxi.framework.core.dao.IBaseDao;
+import ${entityPackage}.${className}Entity;
+
+public interface I${className}Dao extends IBaseDao<${className}Entity, Long>{
+
+}

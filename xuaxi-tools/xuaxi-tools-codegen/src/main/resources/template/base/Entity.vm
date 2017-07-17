@@ -1,0 +1,33 @@
+package ${entityPackage};
+
+import com.xuaxi.framework.core.annotation.TableConfig;
+import com.xuaxi.framework.core.entity.AbstractEntity;
+#foreach($import in $imports)
+import ${import};
+#end
+
+public class ${className}Entity extends AbstractEntity<Long> {
+
+	private static final long serialVersionUID = ${serialVersionUIDEntity}L;
+
+#foreach($column in $columns)
+#if(${column.comment})
+	/**
+	 * ${column.comment}
+	 */
+#end
+	@TableConfig(colName = "t.${column.columnName}")
+	private ${column.javaTypeName} ${column.javaName};
+
+#end
+#foreach($column in $columns)
+	public ${column.javaTypeName} get${column.getSetName}() {
+		return ${column.javaName};
+	}
+
+	public void set${column.getSetName}(${column.javaTypeName} ${column.javaName}) {
+		this.${column.javaName} = ${column.javaName};
+	}
+
+#end
+}

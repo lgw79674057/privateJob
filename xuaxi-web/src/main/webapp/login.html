@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>登录</title>
+<meta name="description" content="登录">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="登录" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/login.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<style type="text/css">
+
+.index_right {
+	float: right;
+	margin-right: 10px;
+}
+
+@media screen and (max-width: 645px) {
+	#index_form {
+		display: none;
+	}
+}
+
+input{
+	background-color: #f8f8f8
+}
+
+#accountSelectTable>thead>tr>th{
+	border-top:1px solid #ddd;
+}
+#accountSelectTable td{
+	text-align: left;
+	cursor: pointer;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$("#indexBth").click(function() {
+			window.location.href = "index.html";
+		});
+
+		$("#savePass").click(function(){
+			if($("#savePass").is(":checked")==false){
+				$("#autoLogin").uCheck('uncheck')
+			}
+		});
+		
+		$("#autoLogin").click(function(){
+			if($("#autoLogin").is(":checked")==true){
+				$("#savePass").uCheck('check')
+			}
+		});
+		
+		$.session.checkSession();
+		
+		$("#login_form").validator({
+			validate : function(validity) {
+				$("select[name='nationality']").removeClass("am-field-valid")
+			}
+		});
+		
+		$(document).on("keydown",function(e){
+			if(e.keyCode==13){
+				$("#loginButton").trigger("click")
+			}
+		});
+		$.Dict.nationalitysCallBack(function(str){
+			$("select[name='nationality']").html(str);
+			if(localStorage.getItem("savePass")==true||localStorage.getItem("savePass")=='true'){
+				$("#savePass").uCheck('check');
+				$("select[name='nationality']").get(0).selectedIndex=localStorage.getItem("nationality");
+				$("input[name='enterpriseNo']").val(localStorage.getItem("enterpriseNo"));
+				$("input[name='userNo']").val(localStorage.getItem("userNo"));
+				$("input[name='username']").val(localStorage.getItem("username"));
+				$("input[name='password']").val(localStorage.getItem("password"));
+				if(localStorage.getItem("autoLogin")==true||localStorage.getItem("autoLogin")=='true'){
+					$("#autoLogin").uCheck('check');
+					if("true"!=$.requestParam("noAuto")){
+						$("#loginButton").trigger("click")
+					}
+				}
+			}
+		});
+	}
+
+
+	function changeLoginType(obj) {
+		var type = $("input[name='loginType']").val();
+		if (type == '0') {
+			$("input[name='loginType']").val("1");
+			$("#phoneLogin").show();
+			$("#passwordLogin").hide();
+			obj.innerHTML = "用户名密码登录";
+		} else {
+			$("input[name='loginType']").val("0");
+			$("#phoneLogin").hide();
+			$("#passwordLogin").show();
+			obj.innerHTML = "短信验证码登录";
+		}
+	}
+	
+	function loginAction(){
+		if ($("#login_form").validator("isFormValid") == true) {
+			$.session.login($('#login_form').serialAll('serial'),function(){
+				if("0"==$("input[name='loginType']").val()||0==$("input[name='loginType']").val()){
+					localStorage.removeItem("nationality");
+					localStorage.removeItem("enterpriseNo");
+					localStorage.removeItem("userNo");
+					localStorage.removeItem("username");
+					localStorage.removeItem("password");
+					localStorage.removeItem("savePass");
+					localStorage.removeItem("autoLogin");
+					if($("#savePass").is(":checked")==true){
+						localStorage.setItem("nationality",$("select[name='nationality']").get(0).selectedIndex);
+						localStorage.setItem("enterpriseNo",$("input[name='enterpriseNo']").val());
+						localStorage.setItem("userNo",$("input[name='userNo']").val());
+						localStorage.setItem("username",$("input[name='username']").val());
+						localStorage.setItem("password",$("input[name='password']").val());
+					}
+					localStorage.setItem("savePass",$("#savePass").is(":checked"));
+					localStorage.setItem("autoLogin",$("#autoLogin").is(":checked"));
+				}
+				var h=sessionStorage.getItem("_dsendRedirect_");
+				window.location.href=h?h:'main.html';
+			},function(result){
+				if(result.error.code==2100){
+					showAccountSelect(result.error);
+				}else{
+					AMUI.dialog.error({
+						title : '系统提示',
+						content : result.error.message
+					});
+				}
+			});
+		}
+	}
+	
+	
+	function showAccountSelect(data){
+		AMUI.dialog.alert({
+			title:"请选择您要登陆的账户",
+			content:'<table class="am-table am-table-hover am-table-striped" id="accountSelectTable"><thead><tr><th></th><th style="min-width: 70px;">位号</th><th style="min-width: 70px;">账号</th><th style="min-width: 70px;">用户名</th></tr></thead></table>',
+			onConfirm:function(){
+				$.session.login(JSON.stringify({
+					loginType:"2",
+					telPhone:$("input[name='telPhone']").val(),
+					key:loginKey,
+					id:selectUserId
+				}));
+			}
+		});
+		var users=data.errorTargetData.users;
+		var html=[];
+		for(var i=0;i<users.length;i++){
+			html.push('<tr onclick="$(this).find(\'input\').uCheck(\'check\');selectUserId=\''+users[i].id+'\';"><td><label class="am-radio am-warning"><input '+(i==0?"checked":"")+' type="radio" name="radio_"></label></td><td>'+users[i].userCode.substring(0,16)+'</td><td>'+users[i].userNo+'</td><td>'+users[i].loginName+'</td></tr>')
+		}
+		selectUserId=users[0].id;
+		$("#accountSelectTable").append(html.join(''));
+		loginKey=data.errorTargetData.key;
+	}
+	
+	var selectUserId;
+	var loginKey;
+	var time;
+	var timeSend;
+	function sendSMS() {
+		var obj_ = $("input[name='telPhone']")
+		obj_.focus();
+		obj_.blur();
+		if (obj_.hasClass("am-field-valid")) {
+			var $loading = AMUI.dialog.loading({
+				title : "正在发送"
+			});
+			$.RESTFUL.POST({
+				url : $.CONTEXT_PATH + "api/v1/user/sms/0",
+				data : '{"telphone":"'
+						+ $("input[name='telPhone']").val() + '"}',
+				success : function(d) {
+					if (d.status == true) {
+						AMUI.dialog.success({
+							title : '系统提示',
+							content : '发送成功'
+						});
+						timeSend = 60;
+						var btn = $("#smsBtn");
+						btn.attr("disabled", "disabled")
+						time = setInterval(function() {
+							if (timeSend <= 0) {
+								btn.removeAttr("disabled");
+								clearInterval(time);
+								btn.text("获取");
+							} else {
+								btn.text(timeSend);
+								timeSend--;
+							}
+						}, 1000);
+						return;
+					}
+					AMUI.dialog.error({
+						title : '系统提示',
+						content : d.error.message
+					});
+				},
+				error : function(response) {
+					AMUI.dialog.error({
+						title : '系统开小差了',
+						content : $.responseToJson(response).error.message
+					});
+				},
+				complete : function() {
+					$loading.modal('close');
+				}
+			});
+		}
+	}
+	
+	function getPassword(){
+		$.getPassword();		
+	}
+</script>
+</head>
+<body>
+	<header class="am-topbar" style="margin-bottom: 0px;background-color: white;">
+		<h1 class="am-topbar-brand">
+			<img src="lib/images/logo1.jpg" style="height: 45px;margin-top: -5px;">&nbsp;<a>旗下“要开票”</a>
+		</h1>
+		<div class="index_right">
+			<button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+				style="border-radius: 4px;" id="indexBth">首页</button>
+		</div>
+	</header>
+	<div class="zx-login-panel am-animation-fade">
+		<div>
+			<div class="zx-login-logo">
+				<img src="lib/images/logo1.jpg" style="width: 300px;">
+			</div>
+			<form class="zx-login-form" id="login_form">
+				<div id="passwordLogin" class="am-animation-fade">
+					<div class="zx-login-input">
+						<span style="width: auto;">单位位号&nbsp;<select name="nationality" style="border:0px;border-bottom: 0px;width: 60px;"></select></span> 
+						<input type="text" style="padding-left: 150px;"
+							placeholder="请输入位号" name="enterpriseNo">
+					</div>
+					<div class="zx-login-input">
+						<span>账号</span> <input type="text"
+							name="userNo" length="6" placeholder="999999">
+					</div>
+					<div class="zx-login-input">
+						<span>用户名</span> <input type="text" name="username" placeholder="系统管理员">
+					</div>
+					<div class="zx-login-input">
+						<span>密码</span> <input type="password"
+							name="password" placeholder="请输入密码" required minlength="6">
+					</div>
+					<div class="zx-login-input" style="border-bottom: 1px solid #c2cad8;text-align: right;color: #777777;padding-top: 10px;padding-bottom: 10px;">
+						<label class="am-checkbox-inline">
+					    	<input type="checkbox" id="savePass" data-am-ucheck> 记住密码
+					  	</label>
+					  	<label class="am-checkbox-inline">
+					   		<input type="checkbox" id="autoLogin" data-am-ucheck> 自动登陆
+					  	</label>
+					</div>
+				</div>
+				<div id="phoneLogin" style="display: none" class="am-animation-fade">
+					<div class="zx-login-input">
+						<i class="am-icon-phone"></i> <input type="text" style="padding-left: 45px;"
+							placeholder="请输入手机号码" name="telPhone" required minlength="6">
+					</div>
+					<div class="zx-login-input">
+						<i class="am-icon-lock"></i> <input type="text" name="smsCode" 
+							placeholder="请输短信验证码" style="width: 60%;padding-left: 45px;" minlength=6 maxlength="6" required>
+						<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+							id="smsBtn" onclick="sendSMS()"
+							style="border-radius: 4px; width: 30%; margin-left: 4%; margin-top: -10px">获取</button>
+					</div>
+				</div>
+				<input type="hidden" name="loginType" value="0" />
+				<div class="am-g zx-login-rememberme">
+					<div class="am-u-sm-12" align="right">
+						<label onclick="changeLoginType(this)" style="cursor: pointer;">短信验证码登录</label>
+						<label onclick="getPassword()" style="cursor: pointer;">忘记密码？</label>
+					</div>
+				</div>
+				<div class="zx-login-button am-g">
+					<div class="am-u-sm-6">
+						<input type="button" class="am-btn am-btn-secondary" value="登录"
+							id="loginButton" onclick="loginAction()"/>
+					</div>
+					<div class="am-u-sm-6">
+						<div class="am-dropdown" style="width: 100%"
+							data-am-dropdown="{boundary: '.am-topbar'}">
+							<button style="border-radius: 4px; margin-top: 0px; width: 100%;"
+								class="am-btn am-btn-secondary am-topbar-btn am-dropdown-toggle"
+								data-am-dropdown-toggle>
+								注册&nbsp;<span class="am-icon-caret-down"></span>
+							</button>
+							<ul class="am-dropdown-content" style="min-width: 150px;cursor: pointer;">
+								<li><a href="regInfo.html">单位</a></li>
+								<li class="am-disabled"><a>个人</a></li>
+								<li class="am-disabled"><a>第三方</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="zx-footer">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号
+	</div>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+</body>
+</html>

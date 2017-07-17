@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.ViewPassDaoImpl">
+	<resultMap id="no_viewpass_map" type="com.xuaxi.entity.ViewPassEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="enterpriseId" column="enterpriseId" javaType="java.lang.Long" />
+		<result property="userId" column="userId" javaType="java.lang.Long" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`enterpriseId`,t.`userId`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		no_viewpass(
+			`id`
+			,`enterpriseId`
+			,`userId`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.enterpriseId != null">#{item.enterpriseId,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.userId != null">#{item.userId,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP())
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.ViewPassEntity">
+		update no_viewpass
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="enterpriseId!=null">`enterpriseId`=#{enterpriseId,javaType=java.lang.Long},</if>
+			<if test="userId!=null">`userId`=#{userId,javaType=java.lang.Long},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+
+	<update id="removeByEnterprise" parameterType="long">
+		update no_viewpass
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`enterpriseId`=#{enterpriseId}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update no_viewpass
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="no_viewpass_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from no_viewpass t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		<if test="sortColumn!=null and sortColumn.size()>0">
+			order by
+			<foreach collection="sortColumn" item="item" index="index"
+				separator=",">
+				${item.column} ${item.operator}
+			</foreach>
+		</if>
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from no_viewpass t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

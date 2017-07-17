@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>用户注册</title>
+<meta name="description" content="用户注册">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.switch.css" />
+<style type="text/css">
+body {
+/* 	background: linear-gradient(#FFDCF3, #B9ECF3); */
+	height: 100%;
+}
+
+.index_right {
+	float: right;
+	margin-right: 10px;
+}
+
+#index_form {
+	margin-top: 12px;
+	position: absolute;
+	right: 75px;
+}
+
+#search_div {
+	max-width: 600px;
+	margin: 2% auto 0;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+@media screen and (max-width: 645px) {
+	#index_form {
+		display: none;
+	}
+}
+
+.pw-strength {
+	clear: both;
+	width: 180px;
+	float: right;
+}
+
+.am-input-group-label {
+	padding-left: 0px;
+}
+
+.zx-input-group>span {
+	width: 80px;
+}
+
+.pw-bar {
+	background: url("lib/images/pwd-1.png") no-repeat;
+	height: 14px;
+	overflow: hidden;
+	width: 179px;
+}
+
+.pw-bar-on {
+	background: url("lib/images/pwd-2.png") no-repeat;
+	width: 0px;
+	height: 14px;
+	position: relative;
+	top: -14px;
+	left: 2px;
+	transition: width .5s ease-in;
+	-moz-transition: width .5s ease-in;
+	-webkit-transition: width .5s ease-in;
+	-o-transition: width .5s ease-in;
+}
+
+.pw-weak .pw-defule {
+	width: 0px;
+}
+
+.pw-weak .pw-bar-on {
+	width: 60px;
+}
+
+.pw-medium .pw-bar-on {
+	width: 120px;
+}
+
+.pw-strong .pw-bar-on {
+	width: 179px;
+}
+
+.pw-txt {
+	padding-top: 2px;
+	width: 180px;
+	overflow: hidden;
+}
+
+.pw-txt span {
+	color: #707070;
+	float: left;
+	font-size: 12px;
+	text-align: center;
+	width: 58px;
+}
+
+legend {
+	margin-bottom: 0px;
+}
+
+fieldset {
+	margin-bottom: 0px;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$("#loginBtn").click(function() {
+			window.location.href = "login.html";
+		});
+	}
+	function step1() {
+		window.location.href = "reg.html";
+	}
+</script>
+</head>
+<body>
+	<header class="am-topbar"  style="background-color: white;">
+		<h1 class="am-topbar-brand">
+			<img src="lib/images/logo1.jpg" style="height: 45px;margin-top: -5px;">&nbsp;<a>旗下“要开票”</a>
+		</h1>
+		<div class="index_right">
+			<span id="index_form"> 我已注册，现在就 </span>
+			<button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+				style="border-radius: 4px;" id="loginBtn">登录</button>
+		</div>
+	</header>
+	<div align="center">
+		<div id="search_div" style="max-width:718px;">
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="step1"
+				style="margin-top: 20px; text-align: left; display: block;">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">单位用户注册前准备：</h3>
+				</header>
+				<br class="am-panel-bd">
+					<div>您好！欢迎您以贵单位的名义注册位号账号。</br>
+						位号平台最大程度保证所发布信息的严谨性及可靠性。因此在注册时，要求您提交相关证明材料。现为保证注册的顺畅及节省注册时间，请按照以下要求进行一下准备。</br>
+						具体如下：</br>
+						<table border="1">
+							<tr>
+								<td>事项</td>
+								<td>目的</td>
+								<td>备注</td>
+							</tr>
+							<tr>
+								<td>1、一部手机</td>
+								<td>接收验证码</td>
+								<td> </td>
+							</tr>
+							<tr>
+								<td>2、注册人盖有单位印章的身份证复印件（正反面）</td>
+								<td>用于将来对注册人身份的验证</td>
+								<td>当前暂不强制</td>
+							</tr>
+							<tr>
+								<td>3、加盖单位印章的证照（营业执照、税务登记证、组织机构代码证、其他证照等）</td>
+								<td>对注册公司的身份予以确认，防止被恶意注册</td>
+								<td>任选一个</td>
+							</tr>
+							<tr>
+								<td>4、本单位开票系统中增值税专用发票开票界面的截屏照片（见样式一）</td>
+								<td>用于证明一般纳税人资格</td>
+								<td>仅一般纳税人提供并本项与第五项二选一。</td>
+							</tr>
+							<tr>
+								<td>5、本单位已开出的增值税专用发记账联（可将购货单位及商品信息部分遮盖住）的照片，如复印件需要加盖印章。（见样式二）</td>
+								<td>用于证明一般纳税人资格</td>
+								<td>仅一般纳税人提供并本项与第四项二选一</td>
+							</tr>
+						</table>
+						注：印章指：公章、财务章、发票专用章、合同专用章等任意一种即可</br>
+						样式一:</br>
+						<input type="image" src="/lib/images/yangshi1.png" style="max-width:695px;"></br>
+						样式二:</br>
+						<input type="image" src="/lib/images/yangshi2.png" style="max-width:695px;"></br>
+					</span>
+					<div><input
+							id="step1_next" type="button" class="am-btn am-btn-secondary"
+							value="下一步"  onclick="step1()"
+							style="width: 45%; border-radius: 4px;margin-left: 186px;"></div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<div class="zx-footer">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号
+	</div>
+	<script type="text/javascript" src="lib/amaze/js/iscroll.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.switch.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.upload.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+</body>
+</html>

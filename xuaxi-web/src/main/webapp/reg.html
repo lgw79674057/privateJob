@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="Zh_cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>用户注册</title>
+<meta name="description" content="用户注册">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="apple-mobile-web-app-title" content="首页" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="lib/amaze/css/amazeui.min.css" />
+<link rel="stylesheet" href="lib/css/app.css" />
+<link rel="stylesheet" href="lib/amaze/css/amazeui.switch.css" />
+<style type="text/css">
+body {
+/* 	background: linear-gradient(#FFDCF3, #B9ECF3); */
+	height: 100%;
+}
+
+.index_right {
+	float: right;
+	margin-right: 10px;
+}
+
+#index_form {
+	margin-top: 12px;
+	position: absolute;
+	right: 75px;
+}
+
+#search_div {
+	max-width: 600px;
+	margin: 2% auto 0;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+@media screen and (max-width: 645px) {
+	#index_form {
+		display: none;
+	}
+}
+
+.pw-strength {
+	clear: both;
+	width: 180px;
+	float: right;
+}
+
+.am-input-group-label {
+	padding-left: 0px;
+}
+
+.zx-input-group>span {
+	width: 80px;
+}
+
+.pw-bar {
+	background: url("lib/images/pwd-1.png") no-repeat;
+	height: 14px;
+	overflow: hidden;
+	width: 179px;
+}
+
+.pw-bar-on {
+	background: url("lib/images/pwd-2.png") no-repeat;
+	width: 0px;
+	height: 14px;
+	position: relative;
+	top: -14px;
+	left: 2px;
+	transition: width .5s ease-in;
+	-moz-transition: width .5s ease-in;
+	-webkit-transition: width .5s ease-in;
+	-o-transition: width .5s ease-in;
+}
+
+.pw-weak .pw-defule {
+	width: 0px;
+}
+
+.pw-weak .pw-bar-on {
+	width: 60px;
+}
+
+.pw-medium .pw-bar-on {
+	width: 120px;
+}
+
+.pw-strong .pw-bar-on {
+	width: 179px;
+}
+
+.pw-txt {
+	padding-top: 2px;
+	width: 180px;
+	overflow: hidden;
+}
+
+.pw-txt span {
+	color: #707070;
+	float: left;
+	font-size: 12px;
+	text-align: center;
+	width: 58px;
+}
+
+legend {
+	margin-bottom: 0px;
+}
+
+fieldset {
+	margin-bottom: 0px;
+}
+</style>
+<script type="text/javascript">
+	window.onload = function() {
+		$("#loginBtn").click(function() {
+			window.location.href = "login.html";
+		});
+
+		$('#password')
+				.keyup(
+						function() {
+							var strongRegex = new RegExp(
+									"^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$",
+									"g");
+							var mediumRegex = new RegExp(
+									"^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$",
+									"g");
+							var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+							if (false == enoughRegex.test($(this).val())) {
+								$('#level').removeClass('pw-weak');
+								$('#level').removeClass('pw-medium');
+								$('#level').removeClass('pw-strong');
+								$('#level').addClass(' pw-defule');
+							} else if (strongRegex.test($(this).val())) {
+								$('#level').removeClass('pw-weak');
+								$('#level').removeClass('pw-medium');
+								$('#level').removeClass('pw-strong');
+								$('#level').addClass(' pw-strong');
+							} else if (mediumRegex.test($(this).val())) {
+								$('#level').removeClass('pw-weak');
+								$('#level').removeClass('pw-medium');
+								$('#level').removeClass('pw-strong');
+								$('#level').addClass(' pw-medium');
+							} else {
+								$('#level').removeClass('pw-weak');
+								$('#level').removeClass('pw-medium');
+								$('#level').removeClass('pw-strong');
+								$('#level').addClass('pw-weak');
+							}
+							return true;
+						});
+
+		$("#zhucexieyi").click(function() {
+			AMUI.dialog.popup({
+				title : "用户注册协议",
+				content : "感谢您选择位号:</br>" +
+				"位号”提醒您，在您使用“位号”及其旗下产品（以下简称“位号”平台）搜索引擎前，均应仔细阅读本声明，用户可选择不使用本搜索引擎服务。一旦您选择使用，即被视为对本声明全部内容的认可和接受。</br>"+
+				"1、单位“位号”申请仅限于本申请单位内相关的负责人，不得冒用其他单位人员的名义来申请单位“位号”，如经本系统查实将无条件删除。</br>" +
+				"2、已申请的单位“位号”不能随意转让。</br>" +
+				"3、在系统中注册的单位，自动授权其单位基础信息、开票信息、收款信息等其他信息允许在“位号”及其旗下平台直接对外进行发布。</br>" +
+				"4、您获得的“位号”平台的所有单位数据，均是搜索引擎技术自动搜索各单位向本平台提供数据所得，任何单位或者个人因使用“位号”平台收录的单位数据中的信息、服务、产品等内容，或据此进行交易等行为，而引致的财产毁损（包括因下载而感染电脑病毒）、名誉或商誉诽谤、版权或知识产权等权利的侵犯等事件，及因该等事件所造成的损害后果，“位号”平台概不负责，不会也不能承担任何法律责任，而应由该企业的所有者承担。</br>"+
+				"5、“位号”平台将尽力帮助用户获得准确真实可靠的信息和得到满意的服务。同时也需要用户及时反馈在使用中遇到的问题并对欺诈行为或违法信息进行举报，以提高“位号”平台服务质量。</br>"+
+				"6、已注册的用户需要保证您所提供的信息及时并准确，当发生有关信息变更时，应及时在“位号”平台上完成相关的变更手续。</br>"+
+				"7、“位号”平台尊重并保护所有“位号”平台用户的个人隐私权，您注册的用户名、电子邮件、手机等个人资料，非经您亲自许可或根据相关法律、法规的强制性规定，“位号”平台不会主动地泄露给第三方。“位号”平台提醒您：您在使用搜索引擎时输入的关键字将不被认为是您的个人隐私资料。</br>"+
+				"8、“位号”平台免责声明适用中华人民共和国法律，用户和“位号”平台一致同意服从中华人民共和国人民法院管辖。如其中任何条款与中华人民共和国法律相抵触时，则这些条款将完全按法律规定重新解释，而其它条款依旧具有法律效力。我们保留随时更改上述免责包括增删条款的权利。</br>"+
+
+				"</br></br>“位号”平台保留本声明条款最终解释权。"
+			});
+		});
+		$("#step1_form").validator({
+			validate : function(validity) {
+				if (validity.field.id == 'repassword') {
+					if ($("#repassword").val() == $("#password").val()) {
+						validity.valid = true;
+					} else {
+						validity.valid = false;
+					}
+				}
+			}
+		});
+		$("#step2_form").validator();
+		$("#step3_form").validator();
+		$("#step4_form").validator();
+		$.Dict.nationalitys($("#step1_form select[name='nationality']"));
+		$.Dict.cardType($("#step1_form select[name='certType']"));
+		addCertFile();
+		//$.Dict.certType($("#cert_1 select[name='certType']"));
+
+		$("#smsBtn").click(sendSMS);
+
+// 		$("#step4_form input[name='address_a']").address({scrollToCenter: true});
+// 		$("#step2_form input[name='_address_1']").address({scrollToCenter: true});
+// 		$("#step2_form input[name='_address_2']").address({scrollToCenter: true});
+// 		$("#step2_form input[name='_address_3']").address({scrollToCenter: true});
+		$("#step2_form input[name='_address_1']").click(function(){
+			$.address({
+				address:"#step2_form input[name='_address_1']",
+				target:"#step2_form input[name='address1Id']"
+			});
+		});
+		$("#step2_form input[name='_address_2']").click(function(){
+			$.address({
+				address:"#step2_form input[name='_address_2']",
+				target:"#step2_form input[name='address2Id']"
+			});
+		});
+		$("#step2_form input[name='_address_3']").click(function(){
+			$.address({
+				address:"#step2_form input[name='_address_3']",
+				target:"#step2_form input[name='address3Id']"
+			});
+		});
+	}
+
+	function step1() {
+		if ($("#step1_form").validator("isFormValid") == true) {
+			var $loading = AMUI.dialog.loading({
+				title : "正在校验"
+			});
+			$.RESTFUL
+					.POST({
+						url : $.CONTEXT_PATH + "api/v1/user/check",
+						data : '{"userNo":"'
+								+ $("#step1_form input[name='userNo']").val()
+								+ '","loginName":"'
+								+ $("#step1_form input[name='loginName']")
+										.val() + '","smsCode":"'
+								+ $("#step1_form input[name='smsCode']").val()
+								+ '","telphone":"'
+								+ $("#step1_form input[name='telphone']").val()
+								+ '"}',
+						success : function(d) {
+							if (d.status == true) {
+								if (d.result == 0) {
+									$('#step1').hide();
+									$('#step2').show();
+									scrollTo(0,0);
+								} else {
+									AMUI.dialog
+											.error({
+												title : '系统提示',
+												content : d.result == 1 ? '用户编号已存在'
+														: d.result == 2 ? '用户名已被使用'
+																: '短信验证码错误',
+												onConfirm : function() {
+													var obj_ = $("#step1_form input[name='"
+															+ (d.result == 1 ? 'userNo'
+																	: (d.result == 2 ? 'loginName'
+																			: 'smsCode'))
+															+ "']");
+													obj_.val("");
+													obj_.focus();
+													obj_.blur();
+													obj_.focus();
+												}
+											});
+								}
+								return;
+							}
+							AMUI.dialog.error({
+								title : '系统开小差了',
+								content : d.error.message
+							});
+						},
+						error : function(response) {
+							AMUI.dialog
+									.error({
+										title : '系统开小差了',
+										content : $.responseToJson(response).error.message
+									});
+						},
+						complete : function() {
+							$loading.modal('close');
+						}
+					});
+		}
+	}
+
+	var time;
+	var timeSend;
+	function sendSMS() {
+		var obj_ = $("#step1_form input[name='telphone']")
+		obj_.focus();
+		obj_.blur();
+		if (obj_.hasClass("am-field-valid")) {
+			var $loading = AMUI.dialog.loading({
+				title : "正在发送"
+			});
+			$.RESTFUL.POST({
+				url : $.CONTEXT_PATH + "api/v1/user/sms/1",
+				data : '{"telphone":"'
+						+ $("#step1_form input[name='telphone']").val() + '"}',
+				success : function(d) {
+					if (d.status == true) {
+						AMUI.dialog.success({
+							title : '系统提示',
+							content : '发送成功',
+							onConfirm : function() {
+							}
+						});
+						timeSend = 60;
+						var btn = $("#smsBtn");
+						btn.attr("disabled", "disabled")
+						time = setInterval(function() {
+							if (timeSend <= 0) {
+								btn.removeAttr("disabled");
+								clearInterval(time);
+								btn.text("获取");
+							} else {
+								btn.text(timeSend);
+								timeSend--;
+							}
+						}, 1000);
+						return;
+					}
+					AMUI.dialog.error({
+						title : '系统提示',
+						content : d.error.message
+					});
+				},
+				error : function(response) {
+					AMUI.dialog.error({
+						title : '系统开小差了',
+						content : $.responseToJson(response).error.message
+					});
+				},
+				complete : function() {
+					$loading.modal('close');
+				}
+			});
+		}
+	}
+</script>
+</head>
+<body>
+	<header class="am-topbar"  style="background-color: white;">
+		<h1 class="am-topbar-brand">
+			<img src="lib/images/logo1.jpg" style="height: 45px;margin-top: -5px;">&nbsp;<a>旗下“要开票”</a>
+		</h1>
+		<div class="index_right">
+			<span id="index_form"> 我已注册，现在就 </span>
+			<button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+				style="border-radius: 4px;" id="loginBtn">登录</button>
+		</div>
+	</header>
+	<div align="center">
+		<div id="search_div">
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="step1"
+				style="margin-top: 20px; text-align: left; display: block;">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">用户信息</h3>
+				</header>
+				<div class="am-panel-bd">
+					<form id="step1_form">
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">登录账号</span><input
+								type="text" class="zx-form-field" name="userNo" value="999999"
+								placeholder="请输入用户编号(6位数字)" maxlength="6" />
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">登录名<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="loginName" placeholder="系统管理员"
+								required minlength="2" maxlength="64">
+							<small>必填，2-64个文字字母及数字组成</small>
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">密码<span class="required"></span></span><input
+								type="password" id="password" class="zx-form-field"
+								name="password" placeholder="请输入密码" required minlength="6"
+								maxlength="12">
+							<small>必填，6-12个字母数字及符号组成</small>
+						</div>
+						<div id="level" class="pw-strength">
+							<div class="pw-bar"></div>
+							<div class="pw-bar-on"></div>
+							<div class="pw-txt">
+								<span>弱</span> <span>中</span> <span>强</span>
+							</div>
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">重复密码</span><input
+								type="password" class="zx-form-field" name="repassword"
+								id="repassword" placeholder="请重复输入密码">
+							<small>请再次输入密码</small>
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">手机号码<span class="required"></span></span><input
+								type="text" class="zx-form-field" name="telphone"
+								placeholder="请输入手机号码" required minlength="6" maxlength="12">
+							<small>手机号码为11位数字，如 15858859888</small>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">验证码<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="smsCode" placeholder="请输入手机验证码"
+								required minlength="6" maxlength="6" style="width: 65%">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								id="smsBtn"
+								style="border-radius: 4px; width: 30%; margin-left: 4%;">获取</button>
+							<small>请输入收到的6位短信验证码</small>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">姓名<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="name" placeholder="请填写真实姓名"
+								required minlength="2" maxlength="64">
+						</div>
+						<div class="am-input-group zx-input-group" style="display: none">
+							<span class="am-input-group-label">性别</span> <input name="sex"
+								type="checkbox" data-am-switch data-off-text="男"
+								data-on-text="女" data-handle-width="60" />
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">邮箱</span><input type="email"
+								class="zx-form-field" name="email" placeholder="请输入邮箱地址，可作为找回密码途径"
+								maxlength="64">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">国籍<span class="required"></span></span><select required
+								class="zx-form-field" name="nationality"></select>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">证件类型</span><select
+								class="zx-form-field" name="certType"></select>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">证件号码</span><input type="text"
+								class="zx-form-field" name="certNo" placeholder="证件号码需与您填写的姓名一致，必要时可以用于证明您的身份"
+								maxlength="64">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">证照照片</span>
+							<input type="text"
+								   class="zx-form-field" name="filePath" placeholder="请上传盖有本单位印章的身份证正反面复印件(公章、财务章、发票章均可)" style="width: 65%;text-overflow:ellipsis;" readonly="readonly"  maxlength="256">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+									style="border-radius: 4px; width: 30%; margin-left: 4%;" onclick="uploadFile($('#step1_form input[name=filePath]'),this)">浏览</button>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">推荐人</span>
+							<input type="text"
+								   class="zx-form-field" name="recommendNo" placeholder="请输入位号"
+								   maxlength="64">
+						</div>
+						<div align="center">
+							<div style="text-align: center; width: 250px">
+								<label class="am-checkbox" style="width: 302px;"> <input
+									type="checkbox" data-am-ucheck
+									onchange="if(this.checked){$('#step1_next').removeAttr('disabled')}else{$('#step1_next').attr('disabled','disabled')}">
+									我已阅读并同意<span style="color: blue; cursor: pointer;"
+									id="zhucexieyi">《用户注册协议及免责声明》</span>
+								</label>
+							</div>
+						</div>
+						<div align="center">
+							<input type="button" class="am-btn am-btn-secondary" value="返回"
+								style="width: 45%; border-radius: 4px"
+								onclick="window.location.href='index.html'"> <input
+								id="step1_next" type="button" class="am-btn am-btn-secondary"
+								value="下一步" disabled="disabled" onclick="step1()"
+								style="width: 45%; border-radius: 4px">
+						</div>
+					</form>
+				</div>
+			</section>
+			<script type="text/javascript">
+				var codeInit=false;
+				var weiDcodeSelectet;
+				function showWeiDcode(){
+					AMUI.dialog.confirm({
+						title:"位号选择",
+						content:weiDcodeSelectet,
+						onConfirm:function(){
+							var etNo = $("#step2_form input[name='enterpriseNo']");
+							etNo.val($("input[name='radioWeiDcodeSelect']:checked").val());
+							etNo.removeAttr("readonly");
+							etNo.focus();
+							etNo.blur();
+							etNo.attr("readonly", "readonly");
+						}
+					});
+					$("input[name='radioWeiDcodeSelect']").uCheck();
+				}
+				
+				function randCode() {
+					if(codeInit==true){
+						showWeiDcode();
+						return;
+					}
+					var $loading = AMUI.dialog.loading({
+						title : "正在获取"
+					});
+					$.RESTFUL
+							.GET({
+								url : $.CONTEXT_PATH
+										+ "api/v1/code/enterprise/gen/"
+										+ $("#step1_form select[name='nationality']")
+												.val(),
+								success : function(d) {
+									if (d.status == true) {
+										var html=[];
+										for(var i=0;i<d.result.length;i++){
+											html.push('<label class="am-radio-inline am-secondary">');
+											html.push('<input type="radio" name="radioWeiDcodeSelect" value="'+d.result[i].no+'"> '+d.result[i].no);
+											html.push('</label>');
+										}
+										weiDcodeSelectet=html.join('');
+										codeInit=true;
+										showWeiDcode();
+										return;
+									}
+									AMUI.dialog.error({
+										title : '系统提示',
+										content : d.error.message
+									});
+								},
+								error : function(response) {
+									AMUI.dialog
+											.error({
+												title : '系统开小差了',
+												content : $
+														.responseToJson(response).error.message
+											});
+								},
+								complete : function() {
+									$loading.modal('close');
+								}
+							});
+				}
+			</script>
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="step2" style="margin-top: 20px; text-align: left; display: none;">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">单位信息</h3>
+				</header>
+				<div class="am-panel-bd">
+					<form id="step2_form">
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">位号<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="enterpriseNo" placeholder="请选择位号"
+								required readonly="readonly">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 45%; margin-left: 4%;"
+								onclick="randCode()">随机选号</button>
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 45%; margin-left: 4%;"
+								onclick="AMUI.dialog.alert({title : '系统提示',content : '如有需求请致电010 51653686'})">付费选号</button>
+							<small>随机选号可提供三个随机位号供选择</small>
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">单位全称<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="name" placeholder="请输入单位全称" required
+								minlength="2" maxlength="128">
+								<small>单位全称请认真填写，注册后不能随意更改</small>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">英文全称</span><input type="text"
+								class="zx-form-field" name="enName" placeholder="请输入单位英文全称"
+								maxlength="128">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">单位简称</span><input type="text"
+								class="zx-form-field" name="abbreviation" placeholder="请输入单位简称"
+								maxlength="64">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">英文简称</span><input type="text"
+								class="zx-form-field" name="enAbbreviation"
+								placeholder="请输入单位英文简称" maxlength="64">
+						</div>
+	<script type="text/javascript">
+		function addAddress(){
+			if($("div[address='2']").is(":hidden")){
+				$("div[address='2']").show();
+				$("div[address='e2']").show();
+			}else if($("div[address='3']").is(":hidden")){
+				$("div[address='3']").show();
+				$("div[address='e3']").show();
+			}else{
+				AMUI.dialog
+				.error({
+					title : '系统提示',
+					content : "最多只能添加3个地址"
+				});
+			}
+		}
+	</script>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">行政区划</br>地址</span>
+							<input type="hidden" name="address1Id">
+							<input
+								class="zx-form-field" type="text" name="_address_1"
+								placeholder="选择地址" readonly="readonly" style="cursor: pointer;width: 75%">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 20%; margin-left: 4%;"
+								onclick="$('#step2_form input[name=_address_1]').trigger('click')">
+								<i class="am-icon-home"></i></button>
+							 <input
+								class="zx-form-field" type="text" name="address1"
+								placeholder="请输入详细地址">
+							<i class="am-icon-plus-circle"  style="color: green; cursor: pointer; position: absolute;right: 5px;margin-top: 5px;font-size: 18px" onclick="addAddress()"></i>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">英文地址</span><input type="text"
+								class="zx-form-field" name="enAddress1" placeholder="请输入英文地址"
+								maxlength="512">
+						</div>
+
+						<div class="am-input-group zx-input-group" address="2" style="display: none">
+							<span class="am-input-group-label">行政区划</br>地址</span>
+							<input type="hidden" name="address2Id">
+							<input
+								class="zx-form-field" type="text" name="_address_2"
+								placeholder="选择地址" readonly="readonly" style="cursor: pointer;width: 75%">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 20%; margin-left: 4%;"
+								onclick="$('#step2_form input[name=_address_2]').trigger('click')">
+								<i class="am-icon-home"></i></button>
+							 <input
+								class="zx-form-field" type="text" name="address2"
+								placeholder="请输入详细地址">
+							<i class="am-icon-minus-circle"  style="color: red; cursor: pointer; position: absolute;right: 5px;margin-top: 5px;font-size: 18px" onclick="$('div[address=2]').find('input').val(''); $('div[address=e2]').find('input').val(''); $('div[address=2]').hide();$('div[address=e2]').hide();"></i>
+						</div>
+						<div class="am-input-group zx-input-group" address="e2" style="display: none">
+							<span class="am-input-group-label">英文地址</span><input type="text"
+								class="zx-form-field" name="enAddress2" placeholder="请输入英文地址"
+								maxlength="512">
+						</div>
+
+						<div class="am-input-group zx-input-group" address="3" style="display: none">
+							<span class="am-input-group-label">行政区划</br>地址</span>
+							<input type="hidden" name="address3Id">
+							<input
+								class="zx-form-field" type="text" name="_address_3"
+								placeholder="选择地址" readonly="readonly" style="cursor: pointer;width: 75%">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 20%; margin-left: 4%;"
+								onclick="$('#step2_form input[name=_address_3]').trigger('click')">
+								<i class="am-icon-home"></i></button>
+							 <input
+								class="zx-form-field" type="text" name="address3"
+								placeholder="请输入详细地址">
+							<i class="am-icon-minus-circle"  style="color: red; cursor: pointer; position: absolute;right: 5px;margin-top: 5px;font-size: 18px" onclick="$('div[address=3]').find('input').val(''); $('div[address=e3]').find('input').val(''); $('div[address=3]').hide();$('div[address=e3]').hide();"></i>
+						</div>
+						<div class="am-input-group zx-input-group" address="e3" style="display: none">
+							<span class="am-input-group-label">英文地址</span><input type="text"
+								class="zx-form-field" name="enAddress3" placeholder="请输入英文地址"
+								maxlength="512">
+						</div>
+						
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">单位电话</span><input type="text"
+								class="zx-form-field" name="phone" placeholder="请输入单位电话"
+								maxlength="24">
+						</div>
+						
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">单位传真</span><input type="text"
+								class="zx-form-field" name="fax" placeholder="请输入单位传真"
+								maxlength="24">
+						</div>
+
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">联系人</span><input type="text"
+								class="zx-form-field" name="contacts" placeholder="请输入联系人"
+								maxlength="128">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">联系电话</span><input type="text"
+								class="zx-form-field" name="cPhone" placeholder="请输入联系电话"
+								maxlength="24">
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">营业范围</span>
+							<textarea class="zx-form-field" name="businessScope"
+								placeholder="请输入营业范围" style="height: 150px;"></textarea>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">法人代表或负责人</span><input type="text"
+								class="zx-form-field" name="legalPerson" placeholder="请输入法人代表或负责人"
+								maxlength="128">
+						</div>
+						<!--<div class="am-input-group zx-input-group">-->
+							<!--<span class="am-input-group-label">查询码</span> <input-->
+								<!--name="dataLock" type="checkbox" data-am-switch data-off-text="关"-->
+								<!--data-on-text="开" data-handle-width="60"-->
+								<!--onchange="if(this.checked){$('#viewCode').show();$('#pviewCode').show()}else{$('#viewCode').hide();$('#pviewCode').hide();}" />-->
+						<!--</div>-->
+						<!--<div class="am-input-group zx-input-group" id="pviewCode"-->
+							<!--style="display: none">-->
+							<!--<span class="am-input-group-label"><span class="required"></span></span><input type="text"-->
+								<!--class="zx-form-field" name="viewCode" id="viewCode"-->
+								<!--style="display: none" placeholder="请输入查询码" required-->
+								<!--minlength="6" maxlength="6">-->
+						<!--</div>-->
+
+						<!--<div class="am-input-group zx-input-group">-->
+							<!--<span class="am-input-group-label"></span>-->
+							<!--<small style="color: #838FA1;">1、查询码是其他用户在登陆“要开票”界面，查询被查询单位发票信息时，需要输入的验证码。即查询码与被查询单位预设的验证码一致时，方可查看发票信息。</small></br>-->
+							<!--<small style="color: #838FA1;">2、查询码为6位，可数字也可英文字母，但不能为文字。</small></br>-->
+							<!--<small style="color: #838FA1;">3、查询码需要由被查询单位自行告知有需要的用户。</small></br>-->
+							<!--<small style="color: #838FA1;">4、查询码设置为“关”，用户无需输入查询码即可查询被查询单位的发票信息。</small></br>-->
+							<!--<small style="color: #838FA1;">5、图标说明：</small></br>-->
+							<!--<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-eye" style="color: #FF9900;"></i>未设置查询码的单位；</small></br>-->
+							<!--<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-unlock" style="color: #FF9900;"></i>设置了查询码，并通过正确的查询码已登陆过的单位</small></br>-->
+							<!--<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-lock" style="color: #FF9900;"></i>设置了查询码，当前未登陆过的单位（需要向被查询单位索要查询码）</small>-->
+
+						<!--</div>-->
+						
+						<div align="center">
+							<input type="button" class="am-btn am-btn-secondary" value="上一步"
+								onclick="$('#step2').hide();$('#step1').show();scrollTo(0,0);"
+								style="width: 45%; border-radius: 4px"> <input
+								type="button" class="am-btn am-btn-secondary" value="下一步"
+								style="width: 45%; border-radius: 4px" onclick="step2Btn()">
+						</div>
+					</form>
+				</div>
+			</section>
+			<script type="text/javascript">
+				function step2Btn() {
+					if ($("#step2_form").validator("isFormValid") == true) {
+
+						var $loading = AMUI.dialog.loading({
+							title : "正在校验"
+						});
+						$.RESTFUL
+								.POST({
+									url : $.CONTEXT_PATH
+											+ "api/v1/enterprise/check/",
+									data:'{"name":"'+$(
+									"#step2_form input[name='name']")
+									.val()+'"}',
+									success : function(d) {
+										if (d.status == true) {
+											if (d.result == true) {
+												$('#step2').hide();
+												$('#step3').show();
+												scrollTo(0,0);
+											} else {
+												AMUI.dialog
+														.error({
+															title : '系统提示',
+															content : $(
+																	"#step2_form input[name='name']")
+																	.val()
+																	+ " 已被注册",
+															onConfirm : function() {
+																var obj_ = $("#step2_form input[name='name']");
+																obj_.val("");
+																obj_.focus();
+																obj_.blur();
+																obj_.focus();
+															}
+														});
+											}
+											return;
+										}
+										AMUI.dialog.error({
+											title : '系统开小差了',
+											content : d.error.message
+										});
+									},
+									error : function(response) {
+										AMUI.dialog
+												.error({
+													title : '系统开小差了',
+													content : $
+															.responseToJson(response).error.message
+												});
+									},
+									complete : function() {
+										$loading.modal('close');
+									}
+								});
+
+					}
+				}
+
+				var ix = 1;
+
+				function uploadFile(obj, btn) {
+					$(btn).attr("disabled", "disabled");
+					setTimeout(function(){
+			 			$(btn).removeAttr("disabled");
+			 		},3000);
+					$.Upload.imgUpload({
+						url : $.CONTEXT_PATH + "api/v1/file/upload",
+						callBack : function(v) {
+							obj.val(v);
+							obj.removeAttr("readonly");
+							obj.focus();
+							obj.blur();
+							obj.attr("readonly", "readonly");
+							$(btn).removeAttr("disabled");
+						}
+					});
+				}
+
+				function addCertFile() {
+					$("#step3_btn").before(
+							Handlebars.compile($("#cert-file-template").html())
+									({
+										index : ix
+									}));
+					$.Dict.certType($("#cert_" + ix
+							+ " select[name='certType']"));
+					ix++;
+				}
+			</script>
+
+			<script id="cert-file-template" type="text/x-handlebars-template">
+	<fieldset fieladset="centUpload" id="cert_{{index}}" class="am-animation-fade">
+		<legend><span>营业执照</span><i class="am-icon-minus-circle"
+		style="color: red; cursor: pointer; float: right;"
+		onclick="$(this).parent().parent().remove()"></i></legend>
+		<div class="am-input-group zx-input-group">
+			<span class="am-input-group-label">证照类型</span><select
+				class="zx-form-field" name="certType"
+				onchange="selectCertType(this)">
+			</select>
+		</div>
+		<div class="am-input-group zx-input-group">
+			<span class="am-input-group-label">证照号码<span class="required"></span></span><input type="text"
+				class="zx-form-field" name="certNo" placeholder="请输入证照号码"
+				required minlength="2" maxlength="64">
+		</div>
+		<div class="am-input-group zx-input-group">
+			<span class="am-input-group-label">证照照片<span class="required"></span></span>
+			<input type="text"
+				class="zx-form-field" name="filePath" placeholder="请上传加盖公司印章的证照复印件" style="width: 65%" readonly="readonly"  maxlength="256">
+			<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+			style="border-radius: 4px; width: 30%; margin-left: 4%;" onclick="uploadFile($('#cert_{{index}} input[name=filePath]'),this)">浏览</button>
+		</div>
+	</fieldset>
+</script>
+<script type="text/javascript">
+	function otherNameChager(o){
+		$(o).parent().prev().prev().find('span').html($(o).val());
+	}
+	
+	function selectCertType(o){
+		$(o).parent().prev().find('span').html($(o).find('option:selected').text());
+		if(o.value=='5'||o.value==5){
+			$(o).parent().after('<div class="am-input-group zx-input-group"><span class="am-input-group-label">证照名称<span class="required"></span></span><input type="text" class="zx-form-field" onchange="otherNameChager(this)" name="certName" placeholder="请输入证照名称" required minlength="2" maxlength="64"></div>')
+		}else{
+			$(o).parent().parent().find("input[name='certName']").parent().remove();
+		}
+	}
+	function shtyxydmz(f){
+		$("fieldset[fieladset='centUpload']").remove();
+		addCertFile();
+		if(f==true){
+			$("#addCertFileBtn").attr("disabled","disabled");
+			$("fieldset[fieladset='centUpload']").find(".am-icon-minus-circle").remove();
+			$("fieldset[fieladset='centUpload']").find("legend span").html("社会统一信用代码证");
+			var select = $("fieldset[fieladset='centUpload']").find("select[name='certType']");
+			select.html("<option value='1'></option>");
+			select.val("1");
+			select.parent().hide();
+		}else{
+			$("#addCertFileBtn").removeAttr("disabled");
+		}
+	}
+</script>
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="step3"
+				style="margin-top: 20px; text-align: left; display: none;">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">
+						单位证照信息
+						<button type="button" class="am-btn am-topbar-btn am-btn-sm" id="addCertFileBtn"
+							style="border-radius: 4px; float: right;" onclick="addCertFile()">
+							<i class="am-icon-plus-circle" style="color: green;"></i>&nbsp;添加
+						</button>
+					</h3>
+				</header>
+				<div class="am-panel-bd">
+					<form id="step3_form">
+						<legend style="text-align: center;margin-bottom: 15px;">是否拥有统一社会信用代码证&nbsp;<input  type="checkbox" data-am-switch
+								data-off-text="否" data-on-text="是"
+								data-handle-width="60" onchange="shtyxydmz(this.checked)"/></legend>
+						<small>说明：
+									1.本平台为了保证所发布信息的准确，并防止恶意注册，故一个法律主体仅能注册一个位号。因此对您身份的合法性的体现，请按照本单位情况提交相关资料。
+									2.加盖印章是指：公章、财务章、合同章、发票章等任意之一即可
+						</small></br>
+						<div align="center" id="step3_btn">
+							<input type="button" class="am-btn am-btn-secondary" value="上一步"
+								onclick="$('#step3').hide();$('#step2').show();scrollTo(0,0);"
+								style="width: 45%; border-radius: 4px"> <input
+								type="button" class="am-btn am-btn-secondary" value="下一步"
+								style="width: 45%; border-radius: 4px" onclick="step3Btn()">
+						</div>
+					</form>
+				</div>
+			</section>
+			<script type="text/javascript">
+				function step3Btn() {
+					if ($("#step3_form").validator("isFormValid") == true) {
+						var files = $("#step3_form fieldset[fieladset='centUpload']");
+						for (var i = 0; i < files.length; i++) {
+							var fieldset = $(files.get(i));
+							var fflength=fieldset.find("input[name='certNo']").val().length;
+
+
+							if(fieldset.find("select[name='certType']").val()=='1'&&!(fflength==15||fflength==18)){
+								AMUI.dialog.error({
+									title : '系统提示',
+									content : '统一社会信用代码长度为15位或18位！',
+									onConfirm:function(){
+										fieldset.find("input[name='certNo']").focus();
+									}
+								});
+								return;
+							}
+							if(fieldset.find("select[name='certType']").val()=='2'&&!(fflength==15||fflength==18)){
+								AMUI.dialog.error({
+									title : '系统提示',
+									content : '营业执照长度为15位或18位！',
+									onConfirm:function(){
+										fieldset.find("input[name='certNo']").focus();
+									}
+								});
+								return;
+							}
+							if(fieldset.find("select[name='certType']").val()=='3'&&!(fflength==15||fflength==18)){
+								AMUI.dialog.error({
+									title : '系统提示',
+									content : '税务登记证长度为15位或18位！',
+									onConfirm:function(){
+										fieldset.find("input[name='certNo']").focus();
+									}
+								});
+								return;
+							}
+							
+							if(fieldset.find("select[name='certType']").val()=='4'&&fflength.length!=9){
+								AMUI.dialog.error({
+									title : '系统提示',
+									content : '组织机构代码长度为9位！',
+									onConfirm:function(){
+										fieldset.find("input[name='certNo']").focus();
+									}
+								});
+								return;
+							}
+							if(fieldset.find("input[name='filePath']").val()=='' ||fieldset.find("input[name='filePath']").val()==null){
+								AMUI.dialog.error({
+									title : '系统提示',
+									content : '证照照片为必填项！',
+									onConfirm:function(){
+										fieldset.find("input[name='filePath']").focus();
+									}
+								});
+								return;
+							}
+						}
+						$("#step4 input[name='enterpriseName']").val($("#step2 input[name='name']").val());
+						$('#step3').hide();
+						$('#step4').show();
+						scrollTo(0,0);
+					}
+				}
+
+			</script>
+			<section class="am-panel am-panel-default am-animation-fade"
+				id="step4" style="margin-top: 20px; text-align: left; display: none">
+				<header class="am-panel-hd">
+					<h3 class="am-panel-title">发票信息</h3>
+				</header>
+				<div class="am-panel-bd">
+					<form id="step4_form">
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">纳税人</span> <input
+								name="invoiceType" type="checkbox" data-am-switch
+								data-off-text="一般纳税人" data-on-text="非一般纳税人"
+								data-handle-width="60" onchange="if(this.checked){$('div[ns]').hide()}else{$('div[ns]').show()}"/>
+								<small>&nbsp;&nbsp;请点击或滑动选择纳税人类型</small>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label">单位名称<span class="required"></span></span><input type="text" readonly="readonly"
+								class="zx-form-field" name="enterpriseName"
+								placeholder="请输入单位名称" required minlength="2" maxlength="128">
+<!-- 							<button type="button" class="am-btn am-topbar-btn am-btn-sm" -->
+<!-- 								style="border-radius: 4px; width: 20%; margin-left: 4%;" -->
+<!-- 								onclick="$('#step4_form input[name=enterpriseName]').val($('#step2_form input[name=name]').val())"> -->
+<!-- 								<i class="am-icon-hand-o-left"></i> -->
+<!-- 							</button> -->
+						</div>
+						<div class="am-input-group zx-input-group">
+							<span class="am-input-group-label" style="width: 240px;">纳税人识别号或社会统一信用代码<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="invoiceCode" placeholder="请输入纳税识别号"
+								required minlength="15" maxlength="18">
+						</div>
+						<div class="am-input-group zx-input-group" ns>
+							
+							<span class="am-input-group-label" style="width: 120px;">单位地址和电话<span class="required"></span></span>
+							
+<!-- 							<input -->
+<!-- 								class="zx-form-field" type="text" name="address_a" -->
+<!-- 								placeholder="选择地址" readonly="readonly" style="cursor: pointer;width: 75%"> -->
+<!-- 							<button type="button" class="am-btn am-topbar-btn am-btn-sm"  -->
+<!-- 								style="border-radius: 4px; width: 20%; margin-left: 4%;" -->
+<!-- 								onclick="$('#step4_form input[name=address_a]').trigger('click')"> -->
+<!-- 								<i class="am-icon-home"></i></button> -->
+							<input
+								class="zx-form-field" type="text" name="address" required="required"
+								placeholder="请输入详细地址和单位电话" maxlength="512">
+<!-- 							<button type="button" class="am-btn am-topbar-btn am-btn-sm" -->
+<!-- 								style="border-radius: 4px; width: 20%; margin-left: 4%;" -->
+<!-- 								onclick="$('#step4_form input[name=address_a]').val($('#step2_form input[name=_address_1]').val());$('#step4_form input[name=address]').val($('#step2_form input[name=address1]').val());"> -->
+<!-- 								<i class="am-icon-hand-o-left"></i> -->
+<!-- 							</button> -->
+							
+							
+						</div>
+						<!--<div class="am-input-group zx-input-group" ns>-->
+							<!--<span class="am-input-group-label">单位电话<span class="required"></span></span><input type="text"-->
+								<!--class="zx-form-field" name="phone" placeholder="请输入单位电话" required="required"-->
+								<!--maxlength="24">-->
+<!--&lt;!&ndash; 							<button type="button" class="am-btn am-topbar-btn am-btn-sm" &ndash;&gt;-->
+<!--&lt;!&ndash; 								style="border-radius: 4px; width: 20%; margin-left: 4%;" &ndash;&gt;-->
+<!--&lt;!&ndash; 								onclick="$('#step4_form input[name=phone]').val($('#step2_form input[name=phone]').val())"> &ndash;&gt;-->
+<!--&lt;!&ndash; 								<i class="am-icon-hand-o-left"></i></button> &ndash;&gt;-->
+						<!--</div>-->
+						<div class="am-input-group zx-input-group" ns>
+							<span class="am-input-group-label" style="width: 120px;">开户银行和账号<span class="required"></span></span><input type="text"
+								class="zx-form-field" name="bankName" placeholder="请输入开户银行和账号"
+								required minlength="2" maxlength="128">
+						</div>
+<!-- 						<div class="am-input-group zx-input-group" ns> -->
+<!-- 							<span class="am-input-group-label">开户支行</span><input type="text" -->
+<!-- 								class="zx-form-field" name="detilBack" placeholder="请输入开户支行" -->
+<!-- 								maxlength="256"> -->
+<!-- 						</div> -->
+						<!--<div class="am-input-group zx-input-group" ns>-->
+							<!--<span class="am-input-group-label">账号<span class="required"></span></span><input type="text"-->
+								<!--class="zx-form-field" name="bancAccount" placeholder="请输入账号"-->
+								<!--required minlength="2" maxlength="21">-->
+						<!--</div>-->
+						<div class="am-input-group zx-input-group" ns style="text-align: left;">
+							<span class="am-input-group-label">发票附件<span class="required"></span></span><input type="text" required="required"
+								class="zx-form-field" name="filePath" placeholder="请上传本单位增值税一般纳税人证明资料"
+								readonly="readonly" maxlength="256" style="width: 64%">
+							<button type="button" class="am-btn am-topbar-btn am-btn-sm"
+								style="border-radius: 4px; width: 30%; margin-left: 4%;"
+								onclick="uploadFile($('#step4_form input[name=filePath]'),this)">浏览</button>
+
+								<small style="color: #838FA1;">说明: </small></br>
+								<small style="color: #838FA1;">证明资料照片内相关信息也应与您上述所填写内容一致。</small></br>
+								<small style="color: #838FA1;"> 上传本单位增值税一般纳税人证明材料可选择以下形式中一种即可。</small></br>
+								<small style="color: #838FA1;"> 形式一：本单位增值税发票税控开票软件中，增值税专用发票开票界面的全截屏（建议.jpg格式），如下图</small>
+								<div>
+									<img src="lib/images/xingshi1.png" style="width:520px;">
+								</div>
+								<small style="color: #838FA1;">形式二：本单位已经开出的增值税专用发票记账联实物照片（在拍照前可根据您自己的需要，将购货方的信息及商品信息进行遮盖，建议.jpg格式）如下图 </small></br>
+								<!--<small style="color: #838FA1;">1、拷屏可以将收款人、复核、开票人隐去，其他信息需要保留。</small></br>-->
+								<!--<small style="color: #838FA1;">2、开票日期距离上传日期应不超过3个工作日。</small></br>-->
+								<!--</br>&nbsp;-->
+								<!--<small style="color: #838FA1;">发票上传方法二（推荐手机端使用）：</small></br>-->
+								<!--<small style="color: #838FA1;">1、将已开出的增值税专用发票的“记账联”进行拍照 。</small></br>-->
+								<!--<small style="color: #838FA1;">2、直接将拍照的图片进行上传。 如：  </small>-->
+								<div>
+									<img src="lib/images/xingshi2.png" style="max-width: 520px;">
+								</div>
+								<!--<small style="color: #838FA1;">注意： </small></br>-->
+								<!--<small style="color: #838FA1;">在拍照前，可将“购货单位”、“货品信息”、“收款人、复核、开票人”进行遮盖后进行拍照。</small></br>-->
+							<div>
+								
+							</div>
+						</div>
+						<div class="am-input-group zx-input-group">
+							<div class="am-input-group zx-input-group">
+								<span class="am-input-group-label">查询码</span> <input
+									name="dataLock" type="checkbox" data-am-switch data-off-text="关"
+									data-on-text="开" data-handle-width="60"
+									onchange="if(this.checked){$('#viewCode').show();$('#pviewCode').show()}else{$('#viewCode').hide();$('#pviewCode').hide();}" />
+							</div>
+							<div class="am-input-group zx-input-group" id="pviewCode"style="display: none">
+								<span class="am-input-group-label"><span class="required"></span></span><input type="text"
+																											   class="zx-form-field" name="viewCode" id="viewCode"
+																											   style="display: none" placeholder="请输入查询码" required
+																											   minlength="6" maxlength="6">
+							</div>
+
+							<div class="am-input-group zx-input-group">
+								<span class="am-input-group-label"></span>
+								<small style="color: #838FA1;">1、查询码是其他用户在登陆“要开票”界面，查询被查询单位发票信息时，需要输入的验证码。即查询码与被查询单位预设的验证码一致时，方可查看发票信息。</small></br>
+								<small style="color: #838FA1;">2、查询码为6位，可数字也可英文字母，但不能为文字。</small></br>
+								<small style="color: #838FA1;">3、查询码需要由被查询单位自行告知有需要的用户。</small></br>
+								<small style="color: #838FA1;">4、查询码设置为“关”，用户无需输入查询码即可查询被查询单位的发票信息。</small></br>
+								<small style="color: #838FA1;">5、图标说明：</small></br>
+								<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-eye" style="color: #FF9900;"></i>未设置查询码的单位；</small></br>
+								<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-unlock" style="color: #FF9900;"></i>设置了查询码，并通过正确的查询码已登陆过的单位</small></br>
+								<small style="color: #838FA1;margin-left: 2rem"><i class="am-icon-lock" style="color: #FF9900;"></i>设置了查询码，当前未登陆过的单位（需要向被查询单位索要查询码）</small>
+
+							</div>
+						</div>
+						<div align="center">
+							<input type="button" class="am-btn am-btn-secondary" value="上一步"
+								onclick="$('#step4').hide();$('#step3').show();scrollTo(0,0);"
+								style="width: 45%; border-radius: 4px"> <input
+								type="button" class="am-btn am-btn-secondary" value="提交"
+								style="width: 45%; border-radius: 4px" onclick="saveData()">
+						</div>
+					</form>
+				</div>
+			</section>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function saveData() {
+			
+			if ($("#step4_form").validator("isFormValid") == true) {
+				var obj = {
+					userInfo : {
+						userNo : $("#step1_form input[name='userNo']").val(),
+						loginName : $("#step1_form input[name='loginName']")
+								.val(),
+						password : $("#step1_form input[name='password']")
+								.val(),
+						telphone : $("#step1_form input[name='telphone']")
+								.val(),
+						smsCode : $("#step1_form input[name='smsCode']").val(),
+						name : $("#step1_form input[name='name']").val(),
+						sex : $("#step1_form input[name='sex']").is(':checked') ? "1"
+								: "0",
+						email : $("#step1_form input[name='email']").val(),
+						nationality : $(
+								"#step1_form select[name='nationality']").val(),
+						certType : $("#step1_form select[name='certType']")
+								.val(),
+						certNo : $("#step1_form input[name='certNo']").val(),
+						certPic :$("#step1_form input[name=filePath]").val(),
+						recommendNo : $("#step1_form input[name=recommendNo]").val()
+					},
+					enterpriseInfo : {
+						enterpriseNo : $(
+								"#step2_form input[name='enterpriseNo']").val(),
+						name : $("#step2_form input[name='name']").val(),
+						enName : $("#step2_form input[name='enName']").val(),
+						abbreviation : $(
+								"#step2_form input[name='abbreviation']").val(),
+						enAbbreviation : $(
+								"#step2_form input[name='enAbbreviation']")
+								.val(),
+								
+								
+						address1 :  $("#step2_form input[name='address1']").val(),
+						address2 : $("#step2_form input[name='address2']").val(),
+						address3 : $("#step2_form input[name='address3']").val(),
+								
+						address1Id:$("#step2_form input[name='address1Id']").val(),		
+						address2Id:$("#step2_form input[name='address2Id']").val(),
+						address3Id:$("#step2_form input[name='address3Id']").val(),
+						fullAddress1 : $("#step2_form input[name='_address_1']").val()+" "
+							+ $("#step2_form input[name='address1']").val(),
+						fullAddress2 : $("#step2_form input[name='_address_2']").val()+" "
+							+$("#step2_form input[name='address2']").val(),
+						fullAddress3 : $("#step2_form input[name='_address_3']").val()+" "
+							+ $("#step2_form input[name='address3']").val(),
+						enAddress1 : $("#step2_form input[name='enAddress1']")
+								.val(),
+						enAddress2 : $("#step2_form input[name='enAddress2']")
+								.val(),
+						enAddress3 : $("#step2_form input[name='enAddress3']")
+								.val(),
+						phone : $("#step2_form input[name='phone']").val(),
+						fax : $("#step2_form input[name='fax']").val(),
+						contacts:$("#step2_form input[name='contacts']").val(),
+						cPhone:$("#step2_form input[name='cPhone']").val(),
+						businessScope : $(
+								"#step2_form textarea[name='businessScope']")
+								.val(),
+						legalPerson : $("#step2_form input[name='legalPerson']")
+								.val(),
+						dataLock : $("#step2_form input[name='dataLock']").is(
+								':checked') ? "1" : "0",
+						viewCode : $("#step4_form input[name='viewCode']")
+								.val()
+					},
+					invoiceInfo : {
+						invoiceType : $("#step4_form input[name='invoiceType']")
+								.is(':checked') ? "0" : "1",
+						enterpriseName : $(
+								"#step4_form input[name='enterpriseName']")
+								.val(),
+						invoiceCode : $("#step4_form input[name='invoiceCode']")
+								.val(),
+						address : /*$("#step4_form input[name='address_a']").val()+" "+*/ $("#step4_form input[name='address']").val(),
+//						phone : $("#step4_form input[name='phone']").val(),
+						bankName : $("#step4_form input[name='bankName']")
+								.val(),
+//						detilBack : $("#step4_form input[name='detilBack']")
+//								.val(),
+//						bancAccount : $("#step4_form input[name='bancAccount']")
+//								.val(),
+						filePath : $("#step4_form input[name='filePath']")
+								.val()
+					}
+				};
+				var files = $("#step3_form fieldset[fieladset='centUpload']");
+				var fileArray = new Array();
+				for (var i = 0; i < files.length; i++) {
+					var fieldset = $(files.get(i));
+					var certType=fieldset.find("select[name='certType']").val();
+					if(certType=='5'||certType==5){
+						certType=fieldset.find("input[name='certName']").val();
+					}
+					fileArray.push({
+						certType : certType,
+						certNo : fieldset.find("input[name='certNo']").val(),
+						filePath : fieldset.find("input[name='filePath']")
+								.val(),
+					});
+				}
+				obj.filesInfo = fileArray;
+				AMUI.dialog
+						.confirm({
+							title : '系统提示',
+							content : '确定信息无误？',
+							onConfirm : function() {
+								var $loading = AMUI.dialog.loading({
+									title : "正在提交"
+								});
+								$.RESTFUL
+										.POST({
+											url : $.CONTEXT_PATH
+													+ "api/v1/user/enterprisereg",
+											data : JSON.stringify(obj),
+											success : function(d) {
+												if (d.status == true) {
+													$("#search_div section").hide();
+													AMUI.dialog
+														.alert({
+														title : '恭喜您成功注册本系统',
+														content : "</br>位号："+obj.enterpriseInfo.enterpriseNo+"</br>单位名称："+obj.enterpriseInfo.name
+														+"</br>登录账号："+obj.userInfo.userNo+"</br>用户名："+obj.userInfo.loginName+"</br>&nbsp;</br>请记住以上系统登录时需要的信息！</br>提示：信息有些复杂，您拿出手机将上面信息拍张照片，第一次登陆就不会忘记啦。",
+														onConfirm : function() {
+															window.location.href = "login.html";
+														}
+													});
+													
+													return;
+												}
+												AMUI.dialog.error({
+													title : '系统开小差了',
+													content : d.error.message
+												});
+											},
+											error : function(response) {
+												AMUI.dialog
+														.error({
+															title : '系统开小差了',
+															content : $
+																	.responseToJson(response).error.message
+														});
+											},
+											complete : function() {
+												$loading.modal('close');
+											}
+										});
+							}
+						});
+			}
+		}
+	</script>
+	<div class="zx-footer">Copyright© 2017 www.yaokaipiao.com.All  Reserved.京ICP备17015776号
+	</div>
+	<script type="text/javascript" src="lib/amaze/js/iscroll.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.ajax.filter.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.session.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.restful.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.min.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.dialog.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.serialAll.js"></script>
+	<script type="text/javascript" src="lib/js/base.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/amazeui.switch.js"></script>
+	<script type="text/javascript" src="lib/js/dictionaries.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery.upload.js"></script>
+	<script type="text/javascript" src="lib/amaze/js/handlebars.min.js"></script>
+</body>
+</html>

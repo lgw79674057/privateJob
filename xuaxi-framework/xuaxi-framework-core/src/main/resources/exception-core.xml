@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exceptions>
+	<exception id="0" responseCode="200" describe="{}">
+		<message language="zh-cn" value="{}" />
+	</exception>
+	<exception id="404" responseCode="404" describe="HTTP 404 Not Found">
+		<message language="zh-cn" value="访问的资源不存在" />
+		<message language="en-us" value="HTTP 404 Not Found" />
+	</exception>
+	<exception id="500" responseCode="500" describe="未知异常">
+		<message language="zh-cn" value="系统异常请稍后再试" />
+		<message language="en-us" value="System Exception Please Try Again Later" />
+	</exception>
+	<exception id="1000" responseCode="200" describe="不支持的字段查询">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1001" responseCode="200" describe="查询必传值为空">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1002" responseCode="200" describe="查询参数重复">
+		<message language="zh-cn" value="系统异常请稍后再试" />
+		<message language="en-us" value="System Exception Please Try Again Later" />
+	</exception>
+	<exception id="1003" responseCode="200" describe="修改ID不能为空">
+		<message language="zh-cn" value="系统异常请稍后再试" />
+		<message language="en-us" value="System Exception Please Try Again Later" />
+	</exception>
+	<exception id="1004" responseCode="200" describe="查询字段不存在">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1005" responseCode="200" describe="查询操作符不支持">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1006" responseCode="200" describe="查询字段不存在">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1007" responseCode="200" describe="不支持的排序字段">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1008" responseCode="200" describe="不存在的排序字段">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1009" responseCode="200" describe="排序字段重复">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1010" responseCode="200" describe="不允许不分页查询">
+		<message language="zh-cn" value="系统不支持该查询" />
+		<message language="en-us" value="The System Does Not Support This Query" />
+	</exception>
+	<exception id="1011" responseCode="200" describe="更新缓存失败">
+		<message language="zh-cn" value="更新缓存失败" />
+		<message language="en-us" value="Update Cache Failed" />
+	</exception>
+	<exception id="1012" responseCode="200" describe="获取缓存失败">
+		<message language="zh-cn" value="获取缓存失败" />
+		<message language="en-us" value="Cache Failed" />
+	</exception>
+	<exception id="401" responseCode="401" describe="用户未登陆跳转登陆页面">
+		<message language="zh-cn" value="您还未登陆，请登陆后访问" />
+	</exception>
+	
+	<exception id="403" responseCode="403" describe="没有权限访问">
+		<message language="zh-cn" value="您没有访问该功能的权限" />
+	</exception>
+</exceptions>

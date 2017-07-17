@@ -1,0 +1,12 @@
+.settings/
+.idea/
+target/
+.project
+*.iml
+*.class
+classes/
+.classpath
+/bin
+*.swp
+.DS_Store
+.DS_Store?

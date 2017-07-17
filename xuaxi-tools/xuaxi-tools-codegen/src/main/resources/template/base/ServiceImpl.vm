@@ -1,0 +1,35 @@
+package ${servicePackage}.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.xuaxi.framework.core.server.AbstractBaseService;
+import com.xuaxi.framework.primarkey.PrimaryKeyGenerator;
+import com.xuaxi.service.utils.SecurityContextHelper;
+import ${daoPackage}.I${className}Dao;
+import ${domainPackage}.${className}Domain;
+import ${entityPackage}.${className}Entity;
+import ${servicePackage}.I${className}Service;
+
+@Service("${attName}ServiceImpl")
+public class ${className}ServiceImpl extends AbstractBaseService<${className}Domain, ${className}Entity, Long> implements I${className}Service{
+
+	@Autowired
+	public ${className}ServiceImpl(I${className}Dao dao) {
+		super(dao);
+	}
+
+	@Override
+	protected Long getPrimaryKey() {
+		return PrimaryKeyGenerator.SEQUENCE.next();
+	}
+
+	@Override
+	protected Long getLoginUserId() {
+		return SecurityContextHelper.getCurrentUserId();
+	}
+
+	@Override
+	protected String getLoginUserName() {
+		return SecurityContextHelper.getCurrentUserName();
+	}
+}

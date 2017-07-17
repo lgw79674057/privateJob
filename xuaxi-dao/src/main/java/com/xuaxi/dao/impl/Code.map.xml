@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuaxi.dao.impl.CodeDaoImpl">
+	<resultMap id="no_code_map" type="com.xuaxi.entity.CodeEntity">
+		<result property="id" column="id" javaType="java.lang.Long" />
+		<result property="enterpriseId" column="enterpriseId" javaType="java.lang.Long" />
+		<result property="no" column="no" javaType="java.lang.String" />
+		<result property="noType" column="noType" javaType="java.lang.String" />
+		<result property="state" column="state" javaType="java.lang.Boolean" />
+		<result property="nationality" column="nationality" javaType="java.lang.String" />
+		<result property="price" column="price" javaType="java.math.BigDecimal" />
+		<result property="deleteTag" column="deleteTag" javaType="java.lang.Boolean" />
+		<result property="createBy" column="createBy" javaType="java.lang.Long" />
+		<result property="createByName" column="createByName" javaType="java.lang.String" />
+		<result property="createTime" column="createTime" javaType="java.sql.Timestamp" />
+		<result property="modifyBy" column="modifyBy" javaType="java.lang.Long" />
+		<result property="modifyByName" column="modifyByName" javaType="java.lang.String" />
+		<result property="modifyTime" column="modifyTime" javaType="java.sql.Timestamp" />
+		<result property="noUse" column="noUse" javaType="java.lang.String" />
+	</resultMap>
+
+	<sql id="Base_Column_List">t.`id`,t.`enterpriseId`,t.`no`,t.`noType`,t.`state`,t.`nationality`,t.`price`,t.`deleteTag`,t.`createBy`,t.`createTime`,t.`modifyBy`,t.`modifyTime`,t.noUse</sql>
+
+	<insert id="create" parameterType="list">
+	insert into
+		no_code(
+			`id`
+			,`enterpriseId`
+			,`no`
+			,`noType`
+			,`state`
+			,`nationality`
+			,`price`
+			,`deleteTag`
+			,`createBy`
+			,`createByName`
+			,`createTime`
+			,`modifyBy`
+			,`modifyByName`
+			,`modifyTime`,noUse)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,javaType=java.lang.Long}
+			 ,<choose><when test="item.enterpriseId != null">#{item.enterpriseId,javaType=java.lang.Long}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.no != null">#{item.no,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.noType != null">#{item.noType,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.state != null">#{item.state,javaType=java.lang.Boolean}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.nationality != null">#{item.nationality,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>
+			 ,<choose><when test="item.price != null">#{item.price,javaType=java.math.BigDecimal}</when><otherwise>DEFAULT</otherwise></choose>
+			,false,
+			#{item.createBy,javaType=java.lang.Long},
+			#{item.createByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP(),
+			#{item.modifyBy,javaType=java.lang.Long},
+			#{item.modifyByName,javaType=java.lang.String},
+			CURRENT_TIMESTAMP()
+			,<choose><when test="item.noUse != null">#{item.noUse,javaType=java.lang.String}</when><otherwise>DEFAULT</otherwise></choose>)
+		</foreach>
+	</insert>
+
+	<update id="merge" parameterType="com.xuaxi.entity.CodeEntity">
+		update no_code
+		<set>
+			<if test="modifyBy!=null">`modifyBy`=#{modifyBy,javaType=java.lang.Long},
+			`modifyByName` = #{modifyByName,javaType=java.lang.String},</if>
+			<if test="enterpriseId!=null">`enterpriseId`=#{enterpriseId,javaType=java.lang.Long},</if>
+			<if test="no!=null">`no`=#{no,javaType=java.lang.String},</if>
+			<if test="noType!=null">`noType`=#{noType,javaType=java.lang.String},</if>
+			<if test="state!=null">`state`=#{state,javaType=java.lang.Boolean},</if>
+			<if test="nationality!=null">`nationality`=#{nationality,javaType=java.lang.String},</if>
+			<if test="price!=null">`price`=#{price,javaType=java.math.BigDecimal},</if>
+			<if test="noUse!=null">`noUse`=#{noUse,javaType=java.lang.String},</if>
+			 `modifyTime` = CURRENT_TIMESTAMP()
+		</set>
+		<where>
+			`id`=#{id,javaType=java.lang.Long}
+		</where>
+	</update>
+
+	<update id="remove" parameterType="list">
+		update no_code
+		<set>
+			`deleteTag`=true
+		</set>
+		<where>
+			`id`
+			<choose>
+				<when test="list.size()==1">=</when>
+				<otherwise>in</otherwise>
+			</choose>
+			<foreach item="id" index="index" collection="list" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<select id="find" resultMap="no_code_map"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		<include refid="Base_Column_List" />
+		from no_code t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+		ORDER BY createTime desc
+		<if test="page==true">
+			limit #{startNum},#{pageSize}
+		</if>
+	</select>
+
+	<select id="count" resultType="long"
+		parameterType="com.xuaxi.framework.core.query.QueryBean">
+		select
+		count(1)
+		from no_code t
+		<where>
+			t.`deleteTag`=false
+			<if test="queryColumn!=null">
+				<foreach collection="queryColumn" item="item" index="index">
+					<choose>
+						<when test="item.operator == 'in' ">
+							and ${item.column} IN
+							<foreach collection="item.value" item="key" open="("
+								separator="," close=")">
+								#{key}
+							</foreach>
+						</when>
+						<otherwise>
+							and ${item.column} ${item.operator} #{item.value}
+						</otherwise>
+					</choose>
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="rand" resultMap="no_code_map" parameterType="map">
+	    select no from `no_code` where deleteTag=false and price=0 and noType=#{noType} and nationality=#{nationality} and state=false order by rand() limit ${count}
+	</select>
+</mapper>

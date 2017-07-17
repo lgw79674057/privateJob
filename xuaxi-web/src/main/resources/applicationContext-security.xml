@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security 
+       http://www.springframework.org/schema/security/spring-security-4.0.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="com.xuaxi.rbac.security" />
+
+	<context:annotation-config />
+
+	<security:authentication-manager id="authenticationManager">
+		<security:authentication-provider
+			user-service-ref="detailService">
+			<security:password-encoder ref="passwordTools" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<bean id="passwordTools" class="com.xuaxi.service.utils.PasswordTools">
+		<property name="passwordEncoder">
+			<bean
+				class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
+		</property>
+	</bean>
+
+	<!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
+	<bean id="detailService" class="com.xuaxi.rbac.security.TraderDetailService" />
+
+	<!-- SPRING SECURITY SETUP -->
+	<security:global-method-security
+		pre-post-annotations="enabled" />
+
+	<security:http realm="Protected API" use-expressions="true"
+		auto-config="false" create-session="stateless" entry-point-ref="unauthorizedEntryPoint"
+		authentication-manager-ref="authenticationManager">
+		<security:headers>
+			 <security:frame-options policy="SAMEORIGIN"/>		    
+		</security:headers>
+		<security:csrf disabled="true" />
+		
+		<security:intercept-url pattern="/api/v1/enterprise/byUser" method="GET" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/enterprise" method="PATCH" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/certfile" method="PATCH" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/certfile/byUser" method="GET" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/invoice/byUser" method="GET" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/invoice" method="PATCH" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/user/sms" method="GET" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/user/modifyPassword" method="PATCH" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/user/follow" method="GET" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/user/follow" method="POST" access="isAuthenticated()" />
+		<security:intercept-url pattern="/api/v1/user/follow" method="DELETE" access="isAuthenticated()" />
+		<!-- 自定义访问受限处理 -->
+		<security:access-denied-handler ref="platformAccessDeniedHandler" />
+		<!-- 自定义token拦截 position 替换 -->
+		<security:custom-filter ref="authenticationTokenProcessingFilter"
+			position="FORM_LOGIN_FILTER" />
+
+	</security:http>
+
+
+	<!-- 认证服务类 -->
+	<bean id="authServer" class="com.xuaxi.service.impl.DefaultAuthServer" />
+
+	<bean id="platformAccessDeniedHandler" class="com.xuaxi.rbac.security.PlatformAccessDeniedHandler" />
+
+	<bean id="unauthorizedEntryPoint" class="com.xuaxi.rbac.security.UnauhtorizedEntryPoint" />
+
+	<bean class="com.xuaxi.rbac.security.AuthenticationTokenProcessingFilter"
+		id="authenticationTokenProcessingFilter" />
+</beans>

@@ -1,0 +1,76 @@
+package ${apiPackage};
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.xuaxi.framework.core.responses.ResponseBuilder;
+import com.xuaxi.framework.utils.request.RequestBuild;
+import ${domainPackage}.${className}Domain;
+import ${servicePackage}.I${className}Service;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.jaxrs.PATCH;
+import io.swagger.annotations.ApiResponse;
+
+@Path("/v1/${restFullPath}")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@Api(value = "${tableDesc} REST API", description = "${tableDesc} REST API")
+public class ${className}Api {
+
+	@Autowired
+	private I${className}Service ${attName}Service;
+	
+	@GET
+	@Path("/{id}")
+	@ApiOperation(value = "根据ID查询${tableDesc}",  httpMethod = "GET", notes="根据ID查询${tableDesc}")
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+	public Response findById(@PathParam("id") Long id) {
+		return ResponseBuilder.buildSuccessResponse(${attName}Service.findByPk(id));
+	}
+	
+	@POST
+	@Path("/")
+	@ApiOperation(value = "添加${tableDesc}",  httpMethod = "POST", notes="添加${tableDesc}")
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+	public Response add(${className}Domain domain) {
+		return ResponseBuilder.buildSuccessResponse(${attName}Service.create(domain));
+	}
+
+	@PATCH
+	@Path("/")
+	@ApiOperation(value = "修改${tableDesc}",  httpMethod = "PATCH", notes="修改${tableDesc}")
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+	public Response merge(${className}Domain domain) {
+		return ResponseBuilder.buildSuccessResponse(${attName}Service.merge(domain));
+	}
+	
+	@DELETE
+	@Path("/{id}")
+	@ApiOperation(value = "删除${tableDesc}",  httpMethod = "DELETE", notes="删除${tableDesc}")
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+	@Consumes
+	public Response delete(@PathParam("id")Long id) {
+		return ResponseBuilder.buildSuccessResponse(${attName}Service.remove(id));
+	}
+	
+
+	@GET
+	@Path("/")
+	@ApiOperation(value = "分页查询${tableDesc}",  httpMethod = "GET", notes="分页查询${tableDesc}")
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "OK")})
+	public Response get(@Context HttpServletRequest request) {
+		return ResponseBuilder.buildSuccessResponse(${attName}Service.findPage(RequestBuild.build(request)));
+	}
+	
+}
